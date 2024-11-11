@@ -13,8 +13,8 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // React 앱의 도메인
-    credentials: true, // 인증 정보를 포함하는 요청 허용
+    origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 
@@ -38,6 +38,55 @@ db.connect((err) => {
   }
   console.log("MySQL connection successful!");
 });
+
+app.get("/api/login-track", (req, res) => {
+  const member = req.cookies.member;
+  if (member) {
+    try {
+      const memberData = JSON.parse(member);
+      return res.status(200).json({
+        loggedIn: true,
+        id: memberData.id,
+      });
+    } catch (error) {
+      console.error("Invalid user cookie format:", error);
+      return res.status(400).json({ error: "Invalid cookie format" });
+    }
+  }
+
+  return res.status(200).json({
+    loggedIn: false,
+    userId: null,
+  });
+});
+
+app.get("/api/get-member-info", (req, res) => {
+  const { id } = req.query;
+
+  if (!id || isNaN(id)) {
+    return res.status(400).json({ error: "Invalid or missing id" });
+  }
+
+  db.query("SELECT * FROM members WHERE id = ?", [id], (err, results) => {
+    if (err) {
+      console.error("Database query error:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Member not found" });
+    }
+
+    const memberInfo = results[0];
+    return res.status(200).json({ memberInfo });
+  });
+});
+
+app.post("/api/logout", (req, res) => {
+  res.clearCookie("member");
+  res.status(200).json({ message: "Logged out" });
+});
+
 
 app.listen(8080, () => {
   console.log("Server is running on port 8080.");
