@@ -87,6 +87,132 @@ app.post("/api/logout", (req, res) => {
   res.status(200).json({ message: "Logged out" });
 });
 
+app.post("/api/signupvalidation", async (req, res) => {
+  const { email, memberId, phoneNumber } = req.body;
+
+  if (!email || !memberId || !phoneNumber) {
+    return res.status(400).json({
+      success: false,
+      message:
+        "Invalid input. Please provide email, memberId, and phoneNumber.",
+    });
+  }
+
+  try {
+    const memberIdResults = await new Promise((resolve, reject) => {
+      db.query(
+        "SELECT * FROM members WHERE memberId = ?",
+        [memberId],
+        (err, results) => {
+          if (err) reject(err);
+          else resolve(results);
+        }
+      );
+    });
+
+    if (memberIdResults.length > 0) {
+      return res.status(200).json({
+        success: false,
+        message: "Member ID already exists",
+      });
+    }
+
+    const phoneNumberResults = await new Promise((resolve, reject) => {
+      db.query(
+        "SELECT * FROM members WHERE phoneNumber = ?",
+        [phoneNumber],
+        (err, results) => {
+          if (err) reject(err);
+          else resolve(results);
+        }
+      );
+    });
+
+    if (phoneNumberResults.length > 0) {
+      return res.status(200).json({
+        success: false,
+        message: "Phone Number already exists",
+      });
+    }
+
+    const emailResults = await new Promise((resolve, reject) => {
+      db.query(
+        "SELECT * FROM members WHERE email = ?",
+        [email],
+        (err, results) => {
+          if (err) reject(err);
+          else resolve(results);
+        }
+      );
+    });
+
+    if (emailResults.length > 0) {
+      return res.status(200).json({
+        success: false,
+        message: "Email already exists",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Validation passed",
+    });
+  } catch (err) {
+    console.error("Database error:", err);
+    return res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.post("/signup", (req, res) => {
+  const {
+    memberId,
+    email,
+    password,
+    name,
+    phoneNumber,
+    profileImageUrl,
+    position,
+  } = req.body;
+
+  const query =
+    "INSERT INTO members (memberId, email, password, name, phoneNumber, profileImageUrl, position) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+  const values = [
+    memberId,
+    email,
+    password,
+    name,
+    phoneNumber,
+    profileImageUrl || null,
+    position || "member",
+  ];
+
+  db.query(query, values, (err, result) => {
+    if (err) {
+      console.error("Database insert error:", err);
+
+      const columnErrorMap = {
+        phoneNumber: "Phone number too long!",
+        memberId: "ID too long!",
+        password: "Password too long!",
+        name: "Name too long!",
+        email: "Email too long!",
+      };
+
+      const matchedColumn = Object.keys(columnErrorMap).find((column) =>
+        err.sqlMessage?.includes(`Data too long for column '${column}'`)
+      );
+
+      if (matchedColumn) {
+        return res.status(400).json({ error: columnErrorMap[matchedColumn] });
+      }
+
+      return res.status(500).json({ error: "Database insert error" });
+    }
+
+    res.status(201).json({ message: "User registered successfully!" });
+  });
+});
 
 app.listen(8080, () => {
   console.log("Server is running on port 8080.");

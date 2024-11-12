@@ -1,0 +1,43 @@
+.sign-up-container{
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+  gap: 10px;
+}
+
+.sign-up-container button{
+  background-color: #B17457;
+  color: #D8D2C2;
+  border-radius: 15px;
+  border-width: 3px;
+  border-color: black;
+  padding: 3px;
+}
+
+.sign-up-container input{
+  background-color: #FAF7F0;
+  border-radius: 15px;
+  border-width: 3px;
+  border-color: black;
+  padding: 3px;
+}
+
+.input-item-container{
+  border-radius: 15px;
+  padding: 10px;
+  background-color: rgb(213, 213, 213);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.id-input{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.sign-up-content{
+  width: 150px;
+}
+
