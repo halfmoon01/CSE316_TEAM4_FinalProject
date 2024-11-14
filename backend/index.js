@@ -5,6 +5,10 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+const stream = require("stream");
 
 require("dotenv").config();
 
@@ -233,7 +237,7 @@ app.post("/signin", (req, res) => {
       const member = results[0];
 
       if (member.password !== password) {
-        return res.status(401).json({ error: "Invalid ID or password" }); // 비밀번호 불일치
+        return res.status(401).json({ error: "Invalid ID or password" }); 
       }
 
       const memberCookie = JSON.stringify({
@@ -253,6 +257,159 @@ app.post("/signin", (req, res) => {
     }
   );
 });
+
+
+
+
+app.post('/change-name', (req, res) => {
+  const { newName, memberId } = req.body;
+
+  if (!newName) {
+    return res.status(400).json({ message: 'Invalid name. Name cannot be empty.' });
+  }
+
+  const query = 'UPDATE members SET name = ? WHERE memberId = ?';
+
+  db.query(query, [newName.trim(), memberId], (err, result) => {
+    if (err) {
+      console.error('Error updating name:', err);
+      return res.status(500).json({ message: 'An error occurred while updating the name.' });
+    }
+
+    return res.status(200).json({ message: 'Name changed successfully!', updatedName: newName });
+  });
+});
+
+
+app.post('/change-email', (req, res) => {
+  const { newEmail, memberId } = req.body;
+
+  if (!newEmail || typeof newEmail !== 'string' || !newEmail.trim()) {
+    return res.status(400).json({ message: 'Invalid email. Email cannot be empty.' });
+  }
+
+  if (!memberId) {
+    return res.status(400).json({ message: 'User ID is required.' });
+  }
+
+  const query = 'UPDATE members SET email = ? WHERE memberId = ?';
+
+  db.query(query, [newEmail.trim(), memberId], (err, result) => {
+    if (err) {
+      console.error('Error updating email:', err);
+      return res.status(500).json({ message: 'An error occurred while updating the email.' });
+    }
+    return res.status(200).json({ message: 'Email changed successfully!', updatedEmail: newEmail });
+  });
+});
+
+// Endpoint to change password
+app.post('/change-password', (req, res) => {
+  const { oldHashedPassword, newHashedPassword, memberId } = req.body;
+
+  console.log('Received Request Body:', req.body); // Debugging
+
+  if (!oldHashedPassword || !newHashedPassword) {
+    return res.status(400).json({ message: 'Passwords cannot be empty.' });
+  }
+
+  // Fetch current hashed password
+  const fetchQuery = 'SELECT password FROM members WHERE memberId = ?';
+
+  db.query(fetchQuery, [memberId], (fetchErr, fetchResult) => {
+    if (fetchErr) {
+      console.error('Error fetching current password:', fetchErr);
+      return res.status(500).json({ message: 'An error occurred while verifying the password.' });
+    }
+
+    if (fetchResult.length === 0) {
+      return res.status(404).json({ message: 'Member not found.' });
+    }
+
+    const currentHashedPassword = fetchResult[0].password;
+
+    // Validate old password
+    if (currentHashedPassword !== oldHashedPassword.trim()) {
+      return res.status(401).json({ message: 'Old password is incorrect.' });
+    }
+
+    // Update with the new hashed password
+    const updateQuery = 'UPDATE members SET password = ? WHERE memberId = ?';
+    db.query(updateQuery, [newHashedPassword.trim(), memberId], (updateErr, updateResult) => {
+      if (updateErr) {
+        console.error('Error updating password:', updateErr);
+        return res.status(500).json({ message: 'An error occurred while updating the password.' });
+      }
+
+      return res.status(200).json({ message: 'Password changed successfully!' });
+    });
+  });
+});
+
+app.post('/change-phone', (req, res) => {
+  const { newPhone, memberId } = req.body;
+
+  if (!newPhone) {
+    return res.status(400).json({ message: 'Invalid password. Password cannot be empty.' });
+  }
+
+  const query = 'UPDATE members SET phoneNumber = ? WHERE memberId = ?';
+
+  db.query(query, [newPhone, memberId], (err, result) => {
+    if (err) {
+      console.error('Error updating password:', err);
+      return res.status(500).json({ message: 'An error occurred while updating the password.' });
+    }
+    return res.status(200).json({ message: 'Password changed successfully!' });
+  });
+});
+
+
+app.post("/change-image", upload.single("image"), async (req, res) => {
+  const { id } = req.body; 
+  const file = req.file; 
+
+  if (!file || !id) {
+    return res.status(400).json({ message: "Image and ID are required." });
+  }
+
+  try {
+    const uploadResponse = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: "user_images", public_id: `user_${id}` },
+        (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+      const bufferStream = new stream.PassThrough();
+      bufferStream.end(file.buffer);
+      bufferStream.pipe(uploadStream);
+    });
+
+    const imageUrl = uploadResponse.secure_url;
+
+    const query = "UPDATE members SET  profileImageUrl = ? WHERE memberId = ?";
+    db.query(query, [imageUrl, id], (err) => {
+      if (err) {
+        console.error("Database query error:", err);
+        return res.status(500).json({ message: "Failed to update database." });
+      }
+
+      res.status(200).json({
+        message: "Image uploaded and saved successfully!",
+        imageUrl,
+      });
+    });
+  } catch (error) {
+    console.error("Error processing image:", error);
+    res.status(500).json({ message: "Failed to upload image." });
+  }
+});
+
 
 app.listen(8080, () => {
   console.log("Server is running on port 8080.");
