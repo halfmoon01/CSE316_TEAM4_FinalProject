@@ -1,0 +1,67 @@
+.announcement-container hr{
+  border: 0;
+  height: 7px;
+  background-color: #B17457;
+  width: 90vw;
+  margin: 20px auto;
+}
+
+.first-child h2{
+  margin-top: 5vh;
+}
+
+.editAnnouncement{
+  display: flex;
+  flex-direction: column;
+}
+
+.forEdit{
+  color: #4A4947;
+}
+
+.announcement-container .submit-button{
+  background-color: #B17457;
+  color: #FAF7F0;
+  max-width: 400px;
+  width: 100px;
+  border-radius: 20px;
+  padding: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-width: 0;
+}
+
+.editAnnouncement input{
+  background-color: #D8D2C2;
+  color:#4A4947;
+  width: 90vw;
+  border-radius: 20px;
+  font-size: 15px;
+  padding: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-width: 0;
+}
+
+.editAnnouncement textarea{
+  background-color: #D8D2C2;
+  color:#4A4947;
+  width: 90vw;
+  border-radius: 20px;
+  font-size: 15px;
+  padding: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-width: 0;
+}
+
+.content-input{
+  height: 50vh;
+}
+
+.edit-announcement-buttons{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  gap: 10px;
+}

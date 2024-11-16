@@ -364,7 +364,6 @@ app.post('/change-phone', (req, res) => {
   });
 });
 
-
 app.post("/change-image", upload.single("image"), async (req, res) => {
   const { id } = req.body; 
   const file = req.file; 
@@ -410,6 +409,21 @@ app.post("/change-image", upload.single("image"), async (req, res) => {
   }
 });
 
+app.get("/api/get-announcement", (req, res) => {
+  db.query("SELECT * FROM announcement", (err, results) => {
+    if (err) {
+      console.error("Database query error:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Internal Server Error" });
+    }
+
+    const announcementData = results[0];
+    return res.status(200).json({ announcementData });
+  });
+});
 
 app.listen(8080, () => {
   console.log("Server is running on port 8080.");
