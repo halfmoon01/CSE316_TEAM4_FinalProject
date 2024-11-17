@@ -425,6 +425,35 @@ app.get("/api/get-announcement", (req, res) => {
   });
 });
 
+app.post("/api/edit-announcement", (req, res) => {
+  const { title, content } = req.body;
+
+  const query = "UPDATE announcement SET title = ?, content = ?";
+
+  db.query(query, [title, content], (err, result) => {
+    if (err) {
+      console.error("Error updating announcement:", err);
+
+      const columnErrorMap = {
+        title: "Title is too long!",
+        content: "Content is too long!",
+      };
+
+      const matchedColumn = Object.keys(columnErrorMap).find((column) =>
+        err.sqlMessage?.includes(`Data too long for column '${column}'`)
+      );
+
+      if (matchedColumn) {
+        return res.status(400).json({ error: columnErrorMap[matchedColumn] });
+      }
+
+      return res.status(500).json({ error: "Database update error" });
+    }
+
+    res.status(200).json({ message: "Updated announcement successfully!" });
+  });
+});
+
 app.listen(8080, () => {
   console.log("Server is running on port 8080.");
 });
