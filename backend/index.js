@@ -454,6 +454,49 @@ app.post("/api/edit-announcement", (req, res) => {
   });
 });
 
+
+app.post("/add-image", upload.single("image"), async (req, res) => {
+  const file = req.file; 
+
+  if (!file) {
+    return res.status(400).json({ message: "Image file is required." });
+  }
+
+  try {
+    const uploadResponse = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: "gallery_images" }, 
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+      const bufferStream = new stream.PassThrough();
+      bufferStream.end(file.buffer);
+      bufferStream.pipe(uploadStream);
+    });
+
+    const imageUrl = uploadResponse.secure_url; 
+
+    const query = "INSERT INTO galleryitems (imageUrl) VALUES (?)";
+    db.query(query, [imageUrl], (err) => {
+      if (err) {
+        console.error("Database query error:", err);
+        return res.status(500).json({ message: "Failed to save image to database." });
+      }
+
+      res.status(200).json({
+        message: "Image uploaded and added to database successfully!",
+        imageUrl,
+      });
+    });
+  } catch (error) {
+    console.error("Error uploading to Cloudinary:", error);
+    res.status(500).json({ message: "Failed to upload image." });
+  }
+});
+
 app.listen(8080, () => {
   console.log("Server is running on port 8080.");
 });
