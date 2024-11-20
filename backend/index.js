@@ -351,11 +351,9 @@ app.post("/change-password", (req, res) => {
       (updateErr, updateResult) => {
         if (updateErr) {
           console.error("Error updating password:", updateErr);
-          return res
-            .status(500)
-            .json({
-              message: "An error occurred while updating the password.",
-            });
+          return res.status(500).json({
+            message: "An error occurred while updating the password.",
+          });
         }
 
         return res
@@ -535,6 +533,24 @@ app.get("/api/get-gallery", (req, res) => {
 
     const galleryData = results;
     return res.status(200).json({ galleryData });
+  });
+});
+
+app.delete("/api/gallery-delete/:imageId", (req, res) => {
+  const { imageId } = req.params;
+
+  const query = "DELETE FROM galleryitems WHERE imageId = ?";
+  db.query(query, [imageId], (err, result) => {
+    if (err) {
+      console.error("Error deleting image from database:", err);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Image not found" });
+    }
+
+    res.status(200).json({ message: "Image deleted successfully" });
   });
 });
 
