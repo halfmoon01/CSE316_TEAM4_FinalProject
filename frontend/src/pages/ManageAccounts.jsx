@@ -1,20 +1,19 @@
-import { useState, useEffect, useRef} from "react";
-import "@/css_files/ManageAccounts.css"; 
-import UserIcon from '../../public/user.png';
+import { useState, useEffect, useRef } from "react";
+import "@/css_files/ManageAccounts.css";
+import UserIcon from "../../public/user.png";
 import { checkAuth } from "../AuthTracker";
 import { useNavigate } from "react-router-dom";
 
 const Members = () => {
   const [members, setMembers] = useState([]);
   const [positions] = useState([
-    "Executive Manager", 
-    "Chief Executive Manager", 
-    "Treasurer", 
-    "Advisor", 
-    "Member"
+    "Executive Manager",
+    "Chief Executive Manager",
+    "Treasurer",
+    "Advisor",
+    "Member",
   ]);
 
- 
   const { id, isExecutives, isLoading, isLoggedIn } = checkAuth();
   const navigate = useNavigate();
   const alerted = useRef(false);
@@ -23,24 +22,29 @@ const Members = () => {
     document.title = "Members Page";
 
     const fetchMembers = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/members/${id}`);
-        if (response.ok) {
-          const data = await response.json();
-          setMembers(data);
-        } else {
-          console.error("Failed to fetch members.");
+      console.log(id);
+      if (id !== null) {
+        try {
+          const response = await fetch(`http://localhost:8080/members/${id}`);
+          if (response.ok) {
+            const data = await response.json(); // 응답 JSON 파싱
+            console.log(data.memberList);
+            setMembers(data.memberList); // 서버의 memberList를 상태로 설정
+          } else {
+            console.error("Failed to fetch members.");
+          }
+        } catch (error) {
+          console.error("Error fetching members:", error);
         }
-      } catch (error) {
-        console.error("Error fetching members:", error);
       }
     };
+
     fetchMembers();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if (!isLoading && !isLoggedIn && !alerted.current) {
-      alerted.current = true; 
+      alerted.current = true;
       alert(
         "You have to sign in first in order to access the page!\nNavigating to the Login Page..."
       );
@@ -56,11 +60,10 @@ const Members = () => {
       );
       navigate("/HomeScreen");
     }
-    
   }, [isLoading, isLoggedIn, isExecutives, navigate]);
 
-  if(isExecutives <= 0 || !isLoggedIn){
-    return <h1>No Permission!</h1>
+  if (isExecutives <= 0 || !isLoggedIn) {
+    return <h1>No Permission!</h1>;
   }
 
   if (isLoading) {
@@ -72,9 +75,11 @@ const Members = () => {
       const response = await fetch(`http://localhost:8080/members/${id}`, {
         method: "DELETE",
       });
-  
+
       if (response.ok) {
-        setMembers((prevMembers) => prevMembers.filter((member) => member.id !== id));
+        setMembers((prevMembers) =>
+          prevMembers.filter((member) => member.id !== id)
+        );
         alert("Member has been removed.");
       } else {
         const errorData = await response.json();
@@ -103,7 +108,11 @@ const Members = () => {
 
     // Accept only one Chief Executive Manager
     const existingChief = members.find((member) => member.isExecutive === 2);
-    if (newIsExecutive === 2 && existingChief && existingChief.id !== memberId) {
+    if (
+      newIsExecutive === 2 &&
+      existingChief &&
+      existingChief.id !== memberId
+    ) {
       alert("There can only be one Chief Executive Manager.");
       return;
     }
@@ -115,19 +124,29 @@ const Members = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/members/${memberId}/position`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ position: newPosition, isExecutive: newIsExecutive }),
-      });
+      const response = await fetch(
+        `http://localhost:8080/members/${memberId}/position`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            position: newPosition,
+            isExecutive: newIsExecutive,
+          }),
+        }
+      );
 
       if (response.ok) {
         setMembers((prevMembers) =>
           prevMembers.map((member) =>
             member.id === memberId
-              ? { ...member, position: newPosition, isExecutive: newIsExecutive }
+              ? {
+                  ...member,
+                  position: newPosition,
+                  isExecutive: newIsExecutive,
+                }
               : member
           )
         );
@@ -142,17 +161,13 @@ const Members = () => {
     }
   };
 
-
   return (
     <>
       <div className="members-container">
         {members.map((member) => (
           <div className="member-card" key={member.id}>
             <div className="member-image">
-              <img
-                src={member.profileImageUrl || UserIcon} 
-                alt="Member"
-              />
+              <img src={member.profileImageUrl || UserIcon} alt="Member" />
             </div>
             <div className="member-content">
               <p>Name: {member.name}</p>
@@ -164,7 +179,9 @@ const Members = () => {
                 <select
                   className="select"
                   value={member.position || "No position assigned"}
-                  onChange={(e) => handlePositionChange(member.id, e.target.value)}
+                  onChange={(e) =>
+                    handlePositionChange(member.id, e.target.value)
+                  }
                 >
                   {positions.map((position) => (
                     <option key={position} value={position}>
