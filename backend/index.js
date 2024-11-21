@@ -554,6 +554,62 @@ app.delete("/api/gallery-delete/:imageId", (req, res) => {
   });
 });
 
+app.get('/members/:id', (req, res) => {
+  const userId = parseInt(req.params.id, 10); 
+  const query = 'SELECT * FROM members WHERE not id = ?';
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching members:', err);
+      return res.status(500).json({ message: 'Failed to fetch members.' });
+    }
+    return res.status(200).json(results);
+  });
+});
+
+app.put("/members/:memberId/position", (req, res) => {
+  const { memberId } = req.params; 
+  const { position, isExecutive } = req.body; 
+
+  const loggedInUserId = req.id;
+  const loggedInUserIsExecutives = req.isExecutives; 
+
+  if (!position || isExecutive === undefined) {
+    return res.status(400).json({ message: "Position and isExecutive are required." });
+  }
+
+  // 1. Chief Executive Manager is only allowed only one person
+  const checkChiefQuery = "SELECT id FROM members WHERE isExecutives = 2";
+  db.query(checkChiefQuery, (err, results) => {
+    if (err) {
+      console.error("Error checking Chief Executive Manager:", err);
+      return res.status(500).json({ message: "Failed to check Chief Executive Manager." });
+    }
+
+    const existingChiefId = results.length > 0 ? results[0].id : null;
+
+    if (isExecutive === 2 && existingChiefId && existingChiefId !== parseInt(memberId, 10)) {
+      return res.status(403).json({ message: "There can only be one Chief Executive Manager." });
+    }
+
+    // 2. Do not allow modification loggedin person
+    if (parseInt(memberId, 10) === parseInt(loggedInUserId, 10)) {
+      return res.status(403).json({ message: "You cannot modify your own position." });
+    }
+
+    // 3. update
+    const updateQuery = "UPDATE members SET position = ?, isExecutives = ? WHERE id = ?";
+    db.query(updateQuery, [position, isExecutive, memberId], (err, result) => {
+      if (err) {
+        console.error("Error updating position:", err);
+        return res.status(500).json({ message: "Failed to update position." });
+      }
+
+      res.status(200).json({ message: "Position and isExecutive updated successfully." });
+    });
+  });
+});
+
 app.listen(8080, () => {
   console.log("Server is running on port 8080.");
 });
