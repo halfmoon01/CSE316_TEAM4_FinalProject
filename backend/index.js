@@ -556,8 +556,8 @@ app.delete("/api/gallery-delete/:imageId", (req, res) => {
 
 app.get("/members/:id", (req, res) => {
   const userId = parseInt(req.params.id);
-  console.log(userId);
-  const query = "SELECT * FROM members WHERE not id = ?";
+
+  const query = 'SELECT * FROM members WHERE not id = ?';
 
   db.query(query, [userId], (err, results) => {
     if (err) {
@@ -565,13 +565,14 @@ app.get("/members/:id", (req, res) => {
       return res.status(500).json({ message: "Failed to fetch members." });
     }
     const memberList = results;
-    console.log(results);
     return res.status(200).json({
       message: "Success!",
       memberList,
     });
   });
 });
+
+
 
 app.put("/members/:memberId/position", (req, res) => {
   const { memberId } = req.params;
@@ -628,6 +629,30 @@ app.put("/members/:memberId/position", (req, res) => {
         .status(200)
         .json({ message: "Position and isExecutive updated successfully." });
     });
+  });
+});
+
+
+app.delete('/members/:id', (req, res) => {
+  const memberId = parseInt(req.params.id, 10); 
+
+  if (isNaN(memberId)) {
+    return res.status(400).json({ message: 'Invalid member ID.' });
+  }
+
+  const query = 'DELETE FROM members WHERE id = ?';
+
+  db.query(query, [memberId], (err, result) => {
+    if (err) {
+      console.error('Error deleting member:', err);
+      return res.status(500).json({ message: 'Failed to delete member.' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Member not found.' });
+    }
+
+    return res.status(200).json({ message: 'Member deleted successfully.' });
   });
 });
 

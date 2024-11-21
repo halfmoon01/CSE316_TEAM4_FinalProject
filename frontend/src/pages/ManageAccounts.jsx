@@ -22,14 +22,12 @@ const Members = () => {
     document.title = "Members Page";
 
     const fetchMembers = async () => {
-      console.log(id);
       if (id !== null) {
         try {
           const response = await fetch(`http://localhost:8080/members/${id}`);
           if (response.ok) {
-            const data = await response.json(); // 응답 JSON 파싱
-            console.log(data.memberList);
-            setMembers(data.memberList); // 서버의 memberList를 상태로 설정
+            const data = await response.json();
+            setMembers(data.memberList); 
           } else {
             console.error("Failed to fetch members.");
           }
@@ -69,28 +67,6 @@ const Members = () => {
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
-
-  const handleRemove = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:8080/members/${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        setMembers((prevMembers) =>
-          prevMembers.filter((member) => member.id !== id)
-        );
-        alert("Member has been removed.");
-      } else {
-        const errorData = await response.json();
-        console.error("Failed to remove member:", errorData.message);
-        alert("Failed to remove member.");
-      }
-    } catch (error) {
-      console.error("Error removing member:", error);
-      alert("An error occurred while trying to remove the member.");
-    }
-  };
 
   const getIsExecutiveValue = (position) => {
     switch (position) {
@@ -161,6 +137,29 @@ const Members = () => {
     }
   };
 
+  const handleRemove = async (memberId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/members/${memberId}`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        setMembers((prevMembers) =>
+          prevMembers.filter((member) => member.id !== memberId)
+        );
+        alert('Member has been removed.');
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to remove member:', errorData.message);
+        alert(errorData.message || 'Failed to remove member.');
+      }
+    } catch (error) {
+      console.error('Error removing member:', error);
+      alert('An error occurred while trying to remove the member.');
+    }
+  };
+  
+  
   return (
     <>
       <div className="members-container">
