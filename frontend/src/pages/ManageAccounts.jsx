@@ -67,6 +67,26 @@ const Members = () => {
     return <h1>Loading...</h1>;
   }
 
+  const handleRemove = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/members/${id}`, {
+        method: "DELETE",
+      });
+  
+      if (response.ok) {
+        setMembers((prevMembers) => prevMembers.filter((member) => member.id !== id));
+        alert("Member has been removed.");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to remove member:", errorData.message);
+        alert("Failed to remove member.");
+      }
+    } catch (error) {
+      console.error("Error removing member:", error);
+      alert("An error occurred while trying to remove the member.");
+    }
+  };
+
   const getIsExecutiveValue = (position) => {
     switch (position) {
       case "Chief Executive Manager":
@@ -156,7 +176,7 @@ const Members = () => {
 
               <button
                 className="remove-account-button"
-                //onClick={() => handleRemove(member.id)}
+                onClick={() => handleRemove(member.id)}
               >
                 Remove
               </button>

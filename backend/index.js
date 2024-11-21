@@ -556,6 +556,7 @@ app.delete("/api/gallery-delete/:imageId", (req, res) => {
 
 app.get('/members/:id', (req, res) => {
   const userId = parseInt(req.params.id, 10); 
+  console.log(userId);
   const query = 'SELECT * FROM members WHERE not id = ?';
 
   db.query(query, [userId], (err, results) => {
