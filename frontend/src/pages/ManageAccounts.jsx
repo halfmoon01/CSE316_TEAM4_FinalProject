@@ -82,55 +82,47 @@ const Members = () => {
   const handlePositionChange = async (memberId, newPosition) => {
     const newIsExecutive = getIsExecutiveValue(newPosition);
 
-    // Accept only one Chief Executive Manager
-    const existingChief = members.find((member) => member.isExecutive === 2);
-    if (
-      newIsExecutive === 2 &&
-      existingChief &&
-      existingChief.id !== memberId
-    ) {
-      alert("There can only be one Chief Executive Manager.");
-      return;
-    }
-
-    // Do not allow to modify logged in person's info
-    if (id === memberId) {
-      alert("You cannot modify your own position.");
-      return;
-    }
-
     try {
+      //1. bring information 
       const response = await fetch(
-        `http://localhost:8080/members/${memberId}/position`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            position: newPosition,
-            isExecutive: newIsExecutive,
-          }),
-        }
-      );
-
-      if (response.ok) {
-        setMembers((prevMembers) =>
-          prevMembers.map((member) =>
-            member.id === memberId
-              ? {
-                  ...member,
-                  position: newPosition,
-                  isExecutive: newIsExecutive,
-                }
-              : member
-          )
-        );
-        alert(`Position updated to "${newPosition}"`);
-      } else {
-        const errorData = await response.json();
-        alert(errorData.message || "Failed to update position.");
+        `http://localhost:8080/manage-account/members/${memberId}`);
+      if(!response.ok){
+        const error = await response.json();
+        alert(error.message || "Failed to fetch member information.");
+        return;
       }
+      const currentMember = await response.json(); // current poeple information
+      // 2. if it is has higher or same isExecutives level than the logged in person -> reject
+      if (currentMember.isExecutives >= isExecutives) {
+        alert("You can only modify the position of someone with the lower rank than you.");
+        return;
+      }
+      // 3. Member(0) → Chief Executive(2) reject 
+      // member cannot be Cheif Executive right away 
+      if (currentMember.isExecutives === 0 && newIsExecutive === 2) {
+        alert("Cannot change directly from Member to Chief Executive.");
+        return;
+      }
+      // 4. send to server
+      const updateResponse = await fetch(
+        `http://localhost:8080/manage-account/members/${memberId}/position`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ position: newPosition, isExecutive: newIsExecutive }),
+      });
+      const responseData = await updateResponse.json();
+  
+      if (!updateResponse.ok) {
+        alert(responseData.message || "Failed to update position.");
+        return;
+      }
+  
+      // 5. if the logged in member has been downgraded -> alert
+      if (responseData.downgraded && responseData.downgraded.id === id) {
+        alert("You have been demoted to Executive Manager.");
+      }
+      alert(`Position updated to "${newPosition}"`);
+      window.location.reload();
     } catch (error) {
       console.error("Error updating position:", error);
       alert("An error occurred while updating the position.");

@@ -572,67 +572,6 @@ app.get("/members/:id", (req, res) => {
   });
 });
 
-
-
-app.put("/members/:memberId/position", (req, res) => {
-  const { memberId } = req.params;
-  const { position, isExecutive } = req.body;
-
-  const loggedInUserId = req.id;
-  const loggedInUserIsExecutives = req.isExecutives;
-
-  if (!position || isExecutive === undefined) {
-    return res
-      .status(400)
-      .json({ message: "Position and isExecutive are required." });
-  }
-
-  // 1. Chief Executive Manager is only allowed only one person
-  const checkChiefQuery = "SELECT id FROM members WHERE isExecutives = 2";
-  db.query(checkChiefQuery, (err, results) => {
-    if (err) {
-      console.error("Error checking Chief Executive Manager:", err);
-      return res
-        .status(500)
-        .json({ message: "Failed to check Chief Executive Manager." });
-    }
-
-    const existingChiefId = results.length > 0 ? results[0].id : null;
-
-    if (
-      isExecutive === 2 &&
-      existingChiefId &&
-      existingChiefId !== parseInt(memberId, 10)
-    ) {
-      return res
-        .status(403)
-        .json({ message: "There can only be one Chief Executive Manager." });
-    }
-
-    // 2. Do not allow modification loggedin person
-    if (parseInt(memberId, 10) === parseInt(loggedInUserId, 10)) {
-      return res
-        .status(403)
-        .json({ message: "You cannot modify your own position." });
-    }
-
-    // 3. update
-    const updateQuery =
-      "UPDATE members SET position = ?, isExecutives = ? WHERE id = ?";
-    db.query(updateQuery, [position, isExecutive, memberId], (err, result) => {
-      if (err) {
-        console.error("Error updating position:", err);
-        return res.status(500).json({ message: "Failed to update position." });
-      }
-
-      res
-        .status(200)
-        .json({ message: "Position and isExecutive updated successfully." });
-    });
-  });
-});
-
-
 app.delete('/members/:id', (req, res) => {
   const memberId = parseInt(req.params.id, 10); 
 
@@ -655,6 +594,117 @@ app.delete('/members/:id', (req, res) => {
     return res.status(200).json({ message: 'Member deleted successfully.' });
   });
 });
+
+
+app.get("/manage-account/members/:memberId", (req, res) => {
+  const { memberId } = req.params;
+
+  const getMemberQuery = "SELECT id, isExecutives, position FROM members WHERE id = ?";
+  db.query(getMemberQuery, [memberId], (err, results) => {
+    if (err) {
+      console.error("Error fetching member data:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
+
+
+app.put("/manage-account/members/:memberId/position", (req, res) => {
+  const { memberId } = req.params;
+  const { position, isExecutive } = req.body;
+  const loggedInUserId = req.id;
+  const loggedInUserIsExecutives = req.isExecutives;
+
+  if (!position || isExecutive === undefined) {
+    return res.status(400).json({ message: "Position and isExecutive are required." });
+  }
+
+  const getCurrentMemberQuery = "SELECT id, isExecutives FROM members WHERE id = ?";
+  db.query(getCurrentMemberQuery, [memberId], (err, results) => {
+    if (err) {
+      console.error("Error fetching member data:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    const currentMember = results[0];
+
+    // if it is has higher or same isExecutives level than the logged in person -> reject
+    if (currentMember.isExecutives >= loggedInUserIsExecutives) {
+      return res.status(403).json({
+        message: "You can only modify the position of someone with the lower rank than you.",
+      });
+    }
+
+    // member cannot be Cheif Executive right away 
+    if (currentMember.isExecutives === 0 && isExecutive === 2) {
+      return res.status(403).json({ message: "Cannot change directly from Member to Chief Executive." });
+    }
+
+    // Chief Executive promotion
+    if (isExecutive === 2) {
+      const checkChiefQuery = "SELECT id FROM members WHERE isExecutives = 2";
+      db.query(checkChiefQuery, (err, chiefResults) => {
+        if (err) {
+          console.error("Error checking Chief Executive Manager:", err);
+          return res.status(500).json({ message: "Failed to check Chief Executive Manager." });
+        }
+
+        const existingChiefId = chiefResults.length > 0 ? chiefResults[0].id : null;
+        // downgrade loggedin member
+        if (existingChiefId && existingChiefId !== parseInt(memberId, 10)) {
+          const downgradeQuery =
+            "UPDATE members SET isExecutives = 1, position = 'Executive Manager' WHERE id = ?";
+          db.query(downgradeQuery, [existingChiefId], (err) => {
+            if (err) {
+              console.error("Error downgrading Chief Executive:", err);
+              return res.status(500).json({ message: "Failed to downgrade Chief Executive." });
+            }
+
+            const downgraded = {
+              id: existingChiefId,
+              position: "Executive Manager",
+              isExecutives: 1,
+            };
+
+            updatePosition(memberId, position, isExecutive, res, downgraded);
+          });
+        } else {
+          updatePosition(memberId, position, isExecutive, res);
+        }
+      });
+    } else {
+      updatePosition(memberId, position, isExecutive, res);
+    }
+  });
+
+  const updatePosition = (memberId, position, isExecutive, res, downgraded = null) => {
+    const updateQuery = "UPDATE members SET position = ?, isExecutives = ? WHERE id = ?";
+    db.query(updateQuery, [position, isExecutive, memberId], (err) => {
+      if (err) {
+        console.error("Error updating position:", err);
+        return res.status(500).json({ message: "Failed to update position." });
+      }
+
+      const response = { message: "Position updated successfully." };
+      if (downgraded) {
+        response.downgraded = downgraded;
+      }
+
+      res.status(200).json(response);
+    });
+  };
+});
+
 
 app.listen(8080, () => {
   console.log("Server is running on port 8080.");
