@@ -139,7 +139,7 @@ const Members = () => {
         setMembers((prevMembers) =>
           prevMembers.filter((member) => member.id !== memberId)
         );
-        alert('Member has been removed.');
+        alert('This member has been removed.');
       } else {
         const errorData = await response.json();
         console.error('Failed to remove member:', errorData.message);

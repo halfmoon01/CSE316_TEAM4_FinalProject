@@ -579,19 +579,35 @@ app.delete('/members/:id', (req, res) => {
     return res.status(400).json({ message: 'Invalid member ID.' });
   }
 
-  const query = 'DELETE FROM members WHERE id = ?';
+  const checkExecutiveQuery = 'SELECT isExecutives FROM members WHERE id = ?';
 
-  db.query(query, [memberId], (err, result) => {
+  db.query(checkExecutiveQuery, [memberId], (err, results) => {
     if (err) {
       console.error('Error deleting member:', err);
-      return res.status(500).json({ message: 'Failed to delete member.' });
+      return res.status(500).json({ message: 'Failed to check member rank' });
     }
 
-    if (result.affectedRows === 0) {
+    if (results.length === 0) {
       return res.status(404).json({ message: 'Member not found.' });
     }
+    
+    const memberRank = results[0].isExecutives;
+    // reject deletion of Cheif Executive
+    if(memberRank === 2){
+      return res.status(403).json({message: 'Cannot delete a Chief Executive. '});
+    }
 
-    return res.status(200).json({ message: 'Member deleted successfully.' });
+    const deleteQuery = 'DELETE FROM members WHERE id = ?';
+    db.query(deleteQuery, [memberId], (err, result) => {
+      if (err) {
+        console.error('Error deleting member:', err);
+        return res.status(500).json({ message: 'Failed to delete member.' });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Member not found.' });
+      }
+      return res.status(200).json({ message: 'Member deleted successfully.' });
+    });
   });
 });
 
