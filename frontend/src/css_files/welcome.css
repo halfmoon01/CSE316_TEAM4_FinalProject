@@ -1,0 +1,12 @@
+.welcome-container{
+  margin-top: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.welcome-container p,
+.welcome-container h2{
+  color: #4A4947;
+  font-weight: bold;
+}
