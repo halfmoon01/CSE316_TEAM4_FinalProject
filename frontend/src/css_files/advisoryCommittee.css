@@ -1,0 +1,28 @@
+.advisory-board{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 90vw;
+}
+
+.advisory-board hr{
+  border: 0;
+  height: 7px;
+  background-color: #B17457;
+  width: 90vw;
+  margin: 20px auto;
+}
+
+.advisory-board h2{
+  margin-top: 15vh;
+}
+
+.advisory-board li{
+  list-style-type: decimal;
+  list-style-position: inside;
+  padding: 0;
+  margin: 0;
+  text-indent: -1.5em;
+  margin-bottom: 10px;
+}
