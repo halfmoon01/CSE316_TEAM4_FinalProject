@@ -65,3 +65,7 @@
   margin-top: 10px;
   gap: 10px;
 }
+
+.announcement-container div {
+  white-space: pre-line;
+} 

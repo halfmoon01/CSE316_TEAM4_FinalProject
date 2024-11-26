@@ -113,7 +113,7 @@ const EditAnnouncement = () => {
           <h2 className="forEdit">Title:</h2>
         </label>
         <input
-          type="text"
+          type="textarea"
           className="title-content"
           id="title"
           value={title}
