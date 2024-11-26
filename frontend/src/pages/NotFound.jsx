@@ -1,13 +1,20 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import "@/css_files/pageNotFound.css";
 
 const NotFound = () => {
-
   useEffect(() => {
-    document.title = 'Page Not Found';
+    document.title = "Page Not Found";
   }, []);
 
-
-  return <h1>404: Page Not Found</h1>;
+  return (
+    <div className="page-not-found-container">
+      <h1>404: Page Not Found</h1>
+      <Link to="/HomeScreen">
+        <p>Click here to go home</p>
+      </Link>
+    </div>
+  );
 };
 
 export default NotFound;
