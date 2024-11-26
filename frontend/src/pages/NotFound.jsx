@@ -1,8 +1,13 @@
+import { useEffect } from "react";
+
 const NotFound = () => {
 
-  return (
-    <></>
-  );
+  useEffect(() => {
+    document.title = 'Page Not Found';
+  }, []);
+
+
+  return <h1>404: Page Not Found</h1>;
 };
 
 export default NotFound;
