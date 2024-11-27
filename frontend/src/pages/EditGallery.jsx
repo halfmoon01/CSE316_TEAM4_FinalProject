@@ -3,11 +3,11 @@ import "@/css_files/gallery.css";
 import axios from "axios";
 import { checkAuth } from "../AuthTracker";
 import { useNavigate } from "react-router-dom";
-import ChangeGallery from '@/dialog/ChangeGallery';
+import ChangeGallery from "@/dialog/ChangeGallery";
 
 const EditGallery = () => {
   const [imageList, setImageList] = useState([]);
-  const {isLoggedIn, isLoading, isExecutives } = checkAuth();
+  const { isLoggedIn, isLoading, isExecutives } = checkAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const EditGallery = () => {
   useEffect(() => {
     document.title = "Edit Gallery Page";
   }, []);
-  
+
   useEffect(() => {
     const fetchGallery = async () => {
       try {
@@ -49,20 +49,21 @@ const EditGallery = () => {
       );
       navigate("/HomeScreen");
     }
-    
   }, [isLoading, isLoggedIn, isExecutives, navigate]);
-
-  if(isExecutives <= 0){
-    return <h1>No Permission!</h1>
-  }
 
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
+  
+  if (isExecutives <= 0) {
+    return <h1>No Permission!</h1>;
+  }
 
   const handleCancel = async (imageId) => {
     try {
-      const response = await axios.delete(`http://localhost:8080/api/gallery-delete/${imageId}`);
+      const response = await axios.delete(
+        `http://localhost:8080/api/gallery-delete/${imageId}`
+      );
       setImageList((prevList) =>
         prevList.filter((image) => image.imageId !== imageId)
       );
@@ -71,7 +72,7 @@ const EditGallery = () => {
       console.error("Error:", error);
     }
   };
-  
+
   return (
     <div className="gallery-container">
       <h1>EDIT GALLERY</h1>
@@ -88,8 +89,17 @@ const EditGallery = () => {
           </div>
         ))}
       </div>
-      <button className="submit-button" id="add-button" onClick={() => setIsDialogOpen(true)}>ADD IMAGE</button>
-      <ChangeGallery isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
+      <button
+        className="submit-button"
+        id="add-button"
+        onClick={() => setIsDialogOpen(true)}
+      >
+        ADD IMAGE
+      </button>
+      <ChangeGallery
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+      />
     </div>
   );
 };

@@ -60,12 +60,12 @@ const Members = () => {
     }
   }, [isLoading, isLoggedIn, isExecutives, navigate]);
 
-  if (isExecutives <= 0 || !isLoggedIn) {
-    return <h1>No Permission!</h1>;
-  }
-
   if (isLoading) {
     return <h1>Loading...</h1>;
+  }
+
+  if (isExecutives <= 0 || !isLoggedIn) {
+    return <h1>No Permission!</h1>;
   }
 
   const getIsExecutiveValue = (position) => {

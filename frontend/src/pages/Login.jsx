@@ -27,12 +27,12 @@ const Login = () => {
     }
   }, [isLoggedIn]);
 
-  if (isLoggedIn) {
-    return <h1>No Permission!</h1>;
-  }
-
   if (isLoading) {
     return <h1>Loading...</h1>;
+  }
+
+  if (isLoggedIn) {
+    return <h1>No Permission!</h1>;
   }
 
   const handleSubmit = async (event) => {

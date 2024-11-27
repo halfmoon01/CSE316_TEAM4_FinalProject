@@ -55,13 +55,15 @@ const EditAnnouncement = () => {
     }
   }, [isLoading, isLoggedIn, isExecutives, navigate]);
 
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
+  
   if(isExecutives <= 0 || !isLoggedIn){
     return <h1>No Permission!</h1>
   }
 
-  if (isLoading) {
-    return <h1>Loading...</h1>;
-  }
+
 
   const changeAnnouncement = async (event) => {
     event.preventDefault();

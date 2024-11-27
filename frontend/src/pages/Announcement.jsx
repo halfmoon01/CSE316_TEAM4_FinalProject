@@ -48,6 +48,10 @@ const Announcement = () => {
     return <h1>Loading...</h1>;
   }
 
+  if (!isLoggedIn) {
+    return <h1>No Permission!</h1>;
+  }
+
   return (
     <div className="announcement-container">
       <h2>{title}</h2>
