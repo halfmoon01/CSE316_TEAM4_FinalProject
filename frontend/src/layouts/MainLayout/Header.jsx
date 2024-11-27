@@ -34,7 +34,7 @@ const Header = () => {
             </Link>
           </li>
           <div className="center-icons">
-            {isExecutives == 1 ? (
+            {isExecutives > 0 ? (
               <li className="dropdown">
                 <a href="#">ADMIN</a>
                 <div className="dropdown-content">
@@ -101,7 +101,7 @@ const Header = () => {
       {/* Side bar menu */}
       <nav className={`side-bar ${isSidebarOpen ? "open" : ""}`}>
         <ul>
-          {isExecutives == 1 ? (
+          {isExecutives > 0 ? (
             <li className="dropdown">
               <a href="#">ADMIN</a>
               <div className="dropdown-content">
