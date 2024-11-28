@@ -721,6 +721,16 @@ app.put("/manage-account/members/:memberId/position", (req, res) => {
   };
 });
 
+app.get("/executives", (req, res) => {
+  const query = "SELECT * FROM members WHERE isExecutives = 1 or isExecutives = 2"; 
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Database query error:", err);
+      return res.status(500).json({ message: "Failed to fetch executives." });
+    }
+    res.status(200).json(results);
+  });
+});
 
 app.listen(8080, () => {
   console.log("Server is running on port 8080.");
