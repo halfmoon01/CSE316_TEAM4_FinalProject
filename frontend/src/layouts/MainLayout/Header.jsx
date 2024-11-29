@@ -11,7 +11,7 @@ const Header = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
   const navigate = useNavigate();
-  
+
   const handleLogout = async () => {
     try {
       logout();
@@ -75,7 +75,17 @@ const Header = () => {
           <li className="right-icon">
             {isLoggedIn ? (
               <Link to="MyInformation">
-                <img src={profileImageUrl} width="30" height="30" alt="User" />
+                <img
+                  src={profileImageUrl}
+                  width="30"
+                  height="30"
+                  alt="User"
+                  style={{
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: "2px solid #B17457",
+                  }}
+                />
               </Link>
             ) : (
               <></>
