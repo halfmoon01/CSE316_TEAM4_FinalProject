@@ -54,7 +54,7 @@ const Announcement = () => {
 
   return (
     <div className="announcement-container">
-      <h2>{title}</h2>
+      <h1>{title}</h1>
       <hr />
       <div>{content}</div>
     </div>

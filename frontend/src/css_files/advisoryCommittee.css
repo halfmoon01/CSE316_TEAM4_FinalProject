@@ -1,9 +1,17 @@
 .advisory-board{
   display: flex;
+  padding-top: 3vh;
   flex-direction: column;
-  align-items: center;
   text-align: center;
   width: 90vw;
+}
+
+.advisory-board-content-container{
+  padding-left: 5vw;
+}
+
+.advisory-board h1{
+  text-align: left;
 }
 
 .advisory-board hr{
@@ -12,10 +20,6 @@
   background-color: #B17457;
   width: 90vw;
   margin: 20px auto;
-}
-
-.advisory-board h2{
-  margin-top: 5vh;
 }
 
 .advisory-board li{

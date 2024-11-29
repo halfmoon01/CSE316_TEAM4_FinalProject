@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import "@/css_files/Executives.css"; 
-import UserIcon from '../../public/user.png';
-import Contact from '../dialog/Contact'; 
+import "@/css_files/Executives.css";
+import UserIcon from "../../public/user.png";
+import Contact from "../dialog/Contact";
 import { checkAuth } from "../AuthTracker";
 
 const Executives = () => {
@@ -30,11 +30,10 @@ const Executives = () => {
   }, []);
 
   const handleOpenDialog = (executive) => {
-    if(isLoggedIn){
+    if (isLoggedIn) {
       setSelectedExecutive(executive);
       setIsDialogOpen(true);
-    }
-    else{
+    } else {
       alert("You must login first to see detailed contact information!");
       return;
     }
@@ -47,6 +46,11 @@ const Executives = () => {
 
   return (
     <>
+      <div className="executives-heading">
+        <h1>Executives</h1>
+        <hr />
+      </div>
+
       <div className="executives-container">
         {executives.map((executive) => (
           <div className="executive-card" key={executive.id}>
@@ -59,11 +63,11 @@ const Executives = () => {
             <div className="executive-content">
               <h3 className="executive-name">{executive.name}</h3>
               <p className="executive-position">{executive.position}</p>
-              <br/>
+              <br />
               <span
                 className="contact-link"
                 onClick={() => handleOpenDialog(executive)}
-                style={{ fontSize: '14px', fontWeight: 'bold' }}
+                style={{ fontSize: "14px", fontWeight: "bold" }}
               >
                 Contact Info
               </span>

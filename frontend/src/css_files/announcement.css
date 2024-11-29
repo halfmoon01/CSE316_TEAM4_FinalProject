@@ -1,13 +1,14 @@
+.announcement-container {
+  padding-top: 3vh;
+  width: 90vw;
+}
+
 .announcement-container hr{
   border: 0;
   height: 7px;
   background-color: #B17457;
   width: 90vw;
   margin: 20px auto;
-}
-
-.first-child h2{
-  margin-top: 5vh;
 }
 
 .editAnnouncement{

@@ -1,62 +1,73 @@
 .executives-container {
-    display: grid;
-    margin-left : 0;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-    gap: 20px;
-    padding: 20px;
-    background-color: FAF7F0;
+  display: grid;
+  margin-left: 0;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  background-color: FAF7F0;
+}
+
+@media (min-width: 800px) {
+  .executives-container {
+    margin-left: 0;
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  @media (min-width: 800px) {
-    .executives-container {
-        margin-left: 0;
-        grid-template-columns: repeat(2, 1fr);
-    }
+}
+
+@media (min-width: 600px) and (max-width: 799px) {
+  .executives-container {
+    grid-template-columns: 1fr;
   }
-  
-  @media (min-width: 600px) and (max-width: 799px) {
-    .executives-container {
-        grid-template-columns: 1fr;
-    }
+}
+
+@media (max-width: 599px) {
+  .executives-container {
+    margin-left: 0;
+    grid-template-columns: 1fr;
   }
-  
-  @media (max-width: 599px) {
-    .executives-container {
-        margin-left: 0;
-        grid-template-columns: 1fr;
-    }
-  }
-  
-  .executive-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 350px;
-    height: 150px;
-    border: 3px solid #B17457;
-    border-radius: 15px;
-    padding: 10px;
-    background-color: #D8D2C2; 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); 
-    color: #4A4947;
-  }
-  
-  .contact-link{
-    cursor: pointer;
-  }
-  
-  .executive-image img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%; 
-    margin-right: 20px;
-    border: 2px solid #B17457; 
-  }
-  
-  .executive-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  
+}
+
+.executive-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 350px;
+  height: 150px;
+  border: 3px solid #b17457;
+  border-radius: 15px;
+  padding: 10px;
+  background-color: #d8d2c2;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+  color: #4a4947;
+}
+
+.contact-link {
+  cursor: pointer;
+}
+
+.executive-image img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-right: 20px;
+  border: 2px solid #b17457;
+}
+
+.executive-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.executives-heading {
+  width: 90vw;
+  padding-top: 3vh;
+}
+
+.executives-heading hr {
+  border: 0;
+  height: 7px;
+  background-color: #b17457;
+  width: 90vw;
+  margin: 20px auto;
+}
