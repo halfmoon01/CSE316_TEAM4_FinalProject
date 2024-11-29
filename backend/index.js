@@ -722,7 +722,7 @@ app.put("/manage-account/members/:memberId/position", (req, res) => {
 });
 
 app.get("/executives", (req, res) => {
-  const query = "SELECT * FROM members WHERE isExecutives = 1 or isExecutives = 2"; 
+  const query = "SELECT * FROM members WHERE isExecutives = 1 or isExecutives = 2 ORDER BY isExecutives DESC"; 
   db.query(query, (err, results) => {
     if (err) {
       console.error("Database query error:", err);
