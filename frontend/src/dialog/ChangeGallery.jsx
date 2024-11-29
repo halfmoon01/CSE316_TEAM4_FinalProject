@@ -56,9 +56,8 @@ const ChangeGallery = ({ isOpen, onClose }) => {
             <div className="line2">
               <input 
               type="file" 
-
               id="fileInput" 
-              className="file-select" 
+              className="new-input" 
               onChange={handleFileChange} 
               />
             </div>

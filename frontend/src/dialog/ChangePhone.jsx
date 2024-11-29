@@ -41,7 +41,6 @@ const ChangePhone = ({ isOpen, onClose }) => {
         title="Change your Phone Number"
         content={
           <>
-            <label htmlFor="newPhone">New Phone Number</label><br />
             <div className="line2">
               <input
                 type="tel"

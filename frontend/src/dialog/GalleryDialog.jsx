@@ -1,14 +1,18 @@
 import React from 'react';
-import "../css_files/gallerydialog.css";
+import "../css_files/dialog.css";
 
-const GalleryDialog = ({ title, content, onClose, onSave }) => {
+const Dialog = ({ title, content, onClose, onSave }) => {
   return (
-    <div className="dialog">
-      <div className="content">
-        <span className="close-icon" onClick={onClose}>&times;</span>
+    <div className="dialog" onClick={onClose}>
+      <div className="dialog-box" onClick={(e) => e.stopPropagation()}>
+        {/* Close Icon */}
+        <span className="close-icon" onClick={onClose}>
+          &times;
+        </span>
         <p className="dialog-title">{title}</p>
-        <hr className="line"/>
+        <hr className="gallery-line"/>
         {content}
+        <hr className="gallery-line"/>
         <div className="button-group">
           <button type="button" className="close-button" onClick={onClose}>
             Discard
@@ -22,4 +26,4 @@ const GalleryDialog = ({ title, content, onClose, onSave }) => {
   );
 };
 
-export default GalleryDialog;
+export default Dialog;

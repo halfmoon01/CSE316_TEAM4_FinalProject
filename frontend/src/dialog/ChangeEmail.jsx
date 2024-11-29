@@ -42,7 +42,6 @@ const ChangeEmail = ({ isOpen, onClose }) => {
         title="Change your Email"
         content={
           <>
-            <label htmlFor="newEmail">New Email</label><br />
             <div className="line2">
               <input
                 type="email"

@@ -76,7 +76,7 @@ const EditGallery = () => {
   return (
     <div className="gallery-container">
       <h1>EDIT GALLERY</h1>
-      <hr />
+      <hr className = "edit-gallery-line"/>
       <div className="gallery-grid">
         {imageList.map((image) => (
           <div className="gallery-item" key={image.imageId}>

@@ -51,11 +51,13 @@ const ChangeImage = ({ isOpen, onClose }) => {
         title="Change your image"
         content={
           <>
-            <label>New Image</label><br />
             <div className="line2">
-              <label htmlFor="fileInput" className="choose-file">Choose File</label>
-              <input type="file" id="fileInput" className="file-select" onChange={handleFileChange} />
-              <span id="fileName">{fileName}</span>
+            <input 
+              type="file" 
+              id="fileInput" 
+              className="new-input" 
+              onChange={handleFileChange} 
+              />
             </div>
           </>
         }

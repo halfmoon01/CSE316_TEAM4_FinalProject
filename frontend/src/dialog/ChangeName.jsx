@@ -41,7 +41,6 @@ const ChangeName = ({ isOpen, onClose }) => {
         title="Change your name"
         content={
           <>
-            <label htmlFor="newName">New Name</label><br />
             <div className="line2">
             <input
               type="text"

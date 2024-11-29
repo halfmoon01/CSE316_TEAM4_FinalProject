@@ -3,9 +3,12 @@ import '@/css_files/Dialog.css';
 
 const Dialog = ({ title, content, onClose, onSave }) => {
   return (
-    <div className="dialog">
-      <div className="content">
-        <span className="close-icon" onClick={onClose}>&times;</span>
+    <div className="dialog" onClick={onClose}>
+      <div className="dialog-box" onClick={(e) => e.stopPropagation()}>
+        {/* Close Icon */}
+        <span className="close-icon" onClick={onClose}>
+          &times;
+        </span>
         <p className="dialog-title">{title}</p>
         <hr className="line"/>
         {content}

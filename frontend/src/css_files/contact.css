@@ -43,11 +43,12 @@
   }
   
   .line {
-    width: 90%;
-    margin: 10px auto;
-    border: 0;
-    border-top: 1px solid #ccc;
+    border: none;
+    border-top: 3px solid #B17457;
+    margin: 10px 0;
+    width: 100%;
   }
+
   
   .contact-info {
     font-size: 14px;
