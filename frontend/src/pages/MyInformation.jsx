@@ -53,9 +53,13 @@ const MyInformation = () => {
   }
 
   return (
-    <div className="myInfo-container">
-      <h1 className="myInfo-title">User Information</h1>
+    <>
+     <div className="myinfo-heading">
+          <h1 className="myInfo-title">User Information</h1>
+          <hr />
+      </div>
 
+    <div className="myInfo-container">
       <div className="info-block">
         <div className="profile-section">
           <img
@@ -124,6 +128,7 @@ const MyInformation = () => {
       <ChangeEmail isOpen={isEmailOpen} onClose={() => setIsEmailOpen(false)} />
       <ChangePhone isOpen={isPhoneOpen} onClose={() => setIsPhoneOpen(false)} />
     </div>
+    </>
   );
 };
 
