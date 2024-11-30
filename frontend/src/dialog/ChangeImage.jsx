@@ -10,6 +10,10 @@ const ChangeImage = ({ isOpen, onClose }) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (!file.type.startsWith("image/")) {
+        alert("Please select a valid image file (e.g., .jpg, .png).");
+        return;
+      }
       setSelectedFile(file);
       setFileName(file.name); 
     }
@@ -62,6 +66,7 @@ const ChangeImage = ({ isOpen, onClose }) => {
               id="fileInput" 
               className="new-input" 
               onChange={handleFileChange} 
+              accept="image/*"
               />
             </div>
           </>

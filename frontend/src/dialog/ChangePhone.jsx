@@ -8,6 +8,12 @@ const ChangePhone = ({ isOpen, onClose }) => {
   const { memberId } = checkAuth(); 
 
   const handleSave = async () => {
+    const phoneRegex = /^[0-9]{3}-[0-9]{4}-[0-9]{4}$/;
+    if (!phoneRegex.test(newPhone)) {
+      alert("Please enter a valid phone number (e.g., 010-1234-5678).");
+    return;
+  }
+
     if (!newPhone.trim()) {
       alert('Phone number cannot be empty');
       return;
@@ -44,12 +50,22 @@ const ChangePhone = ({ isOpen, onClose }) => {
             <div className="line2">
               <input
                 type="tel"
-                placeholder="Enter the new phone number"
+                placeholder="Enter the new phone number (e.g., 010-1234-5678)"
                 id="newPhone"
                 className="new-input"
                 value={newPhone}
-                onChange={(e) => setNewPhone(e.target.value)}
+                onChange={(e) => {
+                  const input = e.target.value;
+                  if (/^[0-9-]*$/.test(input)) {
+                    setNewPhone(input); // 숫자와 '-'만 허용
+                  }
+                }}
+                pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" // 한국 전화번호 형식
+                required
               />
+              {!/^[0-9]{3}-[0-9]{4}-[0-9]{4}$/.test(newPhone) && newPhone.length > 0 && (
+              <p style={{ color: "red" }}>Invalid phone number format. Use 010-1234-5678.</p>
+            )}
             </div>
           </>
         }

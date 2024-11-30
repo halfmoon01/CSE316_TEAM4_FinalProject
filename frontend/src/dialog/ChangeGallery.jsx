@@ -21,8 +21,8 @@ const ChangeGallery = ({ isOpen, onClose }) => {
       alert("Please select an image file.");
       return;
     }
-    if (isSaving) return; // 이미 저장 중이라면 실행 막기
-    setIsSaving(true); // 저장 중 상태로 설정
+    if (isSaving) return; 
+    setIsSaving(true);
   
     const formData = new FormData();
     formData.append("image", selectedFile); 
@@ -64,6 +64,7 @@ const ChangeGallery = ({ isOpen, onClose }) => {
               id="fileInput" 
               className="new-input" 
               onChange={handleFileChange} 
+              accept="image/*"
               />
             </div>
           </>

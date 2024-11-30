@@ -12,6 +12,12 @@ const ChangeEmail = ({ isOpen, onClose }) => {
       alert('Email cannot be empty');
       return;
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newEmail)) {
+      alert('Please enter a valid email address.');
+      return;
+    }
   
     try {
       const response = await fetch('http://localhost:8080/change-email', {
@@ -51,6 +57,9 @@ const ChangeEmail = ({ isOpen, onClose }) => {
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
               />
+              {!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail) && newEmail.length > 0 && (
+                <p style={{ color: 'red' }}>Please enter a valid email address.</p>
+              )}
             </div>
           </>
         }
