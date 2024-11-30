@@ -6,6 +6,7 @@ import ChangeName from "@/dialog/ChangeName";
 import ChangeEmail from "@/dialog/ChangeEmail";
 import ChangePhone from "@/dialog/ChangePhone";
 import UserIcon from "../../public/user.png";
+import { Person, Email, Phone, Lock, Work, Badge } from "@mui/icons-material";
 
 import { checkAuth } from "../AuthTracker";
 import "@/css_files/MyInformation.css";
@@ -55,7 +56,7 @@ const MyInformation = () => {
   return (
     <>
      <div className="myinfo-heading">
-          <h1 className="myInfo-title">User Information</h1>
+          <h1 className="myInfo-title">My Information</h1>
           <hr />
       </div>
 
@@ -78,14 +79,18 @@ const MyInformation = () => {
 
       <div className="info-grid">
         <div className="info-card">
-          <p className="info-label">Name</p>
+        <h2 className="info-label">
+          <Person className="icon" /> Name
+        </h2>
           <p className="info-value">{name}</p>
           <button className="change-button" onClick={() => setIsNameOpen(true)}>
             Edit
           </button>
         </div>
         <div className="info-card">
-          <p className="info-label">Email</p>
+        <h2 className="info-label">
+          <Email className="icon" /> Email
+        </h2>
           <p className="info-value">{email}</p>
           <button
             className="change-button"
@@ -95,7 +100,9 @@ const MyInformation = () => {
           </button>
         </div>
         <div className="info-card">
-          <p className="info-label">Phone</p>
+        <h2 className="info-label">
+          <Phone className="icon" /> Phone
+        </h2>
           <p className="info-value">{phoneNumber}</p>
           <button
             className="change-button"
@@ -105,18 +112,24 @@ const MyInformation = () => {
           </button>
         </div>
         <div className="info-card">
-          <p className="info-label">Password</p>
+          <h2 className="info-label">
+            <Lock className="icon" /> Password
+          </h2>
           <p className="info-value">•••••••</p>
           <button className="change-button" onClick={() => setIsPwdOpen(true)}>
             Edit
           </button>
         </div>
         <div className="info-card">
-          <p className="info-label">Position</p>
+          <h2 className="info-label">
+            <Work className="icon" /> Position
+          </h2>
           <p className="info-value">{position}</p>
         </div>
         <div className="info-card">
-          <p className="info-label">Member ID</p>
+        <h2 className="info-label">
+          <Badge className="icon" /> Member ID
+        </h2>
           <p className="info-value">{memberId}</p>
         </div>
       </div>

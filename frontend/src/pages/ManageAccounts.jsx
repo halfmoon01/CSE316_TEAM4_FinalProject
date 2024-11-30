@@ -154,6 +154,10 @@ const Members = () => {
   
   return (
     <>
+    <div className="myinfo-heading">
+          <h1 className="myInfo-title">Manage Accounts</h1>
+          <hr />
+      </div>
       <div className="members-container">
         {members.map((member) => (
           <div className="member-card" key={member.id}>
