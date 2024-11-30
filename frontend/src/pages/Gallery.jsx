@@ -27,7 +27,7 @@ const Gallery = () => {
   return (
     <div className="gallery-container">
       <h1>GALLERY</h1>
-      <hr />
+      <hr className="gallery-header-line"/>
       <div className="gallery-grid">
         {imageList.map((image) => (
           <div className="gallery-item" key={image.imageId}>

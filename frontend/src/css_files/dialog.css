@@ -47,6 +47,11 @@
 .button-group .save-button:hover {
   background-color: #C97D62
 }
+.button-group .save-button:disabled{
+  background-color: #ccc; 
+  color: #666;
+  cursor: not-allowed;
+}
 
 .button-group .close-button {
   background-color: #6c757d;

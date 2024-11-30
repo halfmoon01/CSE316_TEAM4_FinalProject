@@ -5,14 +5,15 @@
   width: 90vw;
 }
 
-.gallery-container hr{
+
+.edit-gallery-line{
   border: 0;
   height: 7px;
   background-color: #B17457;
   margin: 20px auto;
 }
 
-.edit-gallery-line{
+.gallery-header-line{
   border: 0;
   height: 7px;
   background-color: #B17457;
