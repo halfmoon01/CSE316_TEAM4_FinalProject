@@ -35,10 +35,12 @@
   width: 50vw;
 }
 
-.image-placeholder {
+.image-sizer {
   width: 40vw;
   height: 500px;
   background-color: #ccc;
+  border: 3px solid #B17457;
+  border-radius: 20px;
 }
 
 .grid-container {
@@ -47,14 +49,11 @@
   gap: 20px;
 }
 
-.grid-container .image-placeholder{
-  width: 20vw;
-  height: 250px;
-}
-
-.content-grid-container .image-placeholder{
+.content-grid-container .image-sizer{
   width: 45vw;
-  height: 250px;
+  height: 350px;
+  border-radius: 20px;
+  border: 3px solid #B17457;
 }
 
 @media (max-width: 800px) {
