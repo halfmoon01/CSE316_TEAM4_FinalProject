@@ -4,6 +4,7 @@ import { checkAuth } from "../AuthTracker";
 const ChangeImage = ({ isOpen, onClose }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileName, setFileName] = useState('No file chosen');
+  const [isSaving, setIsSaving] = useState(false); // 저장 중 상태 추가
   const {memberId} = checkAuth();
   
   const handleFileChange = (e) => {
@@ -19,6 +20,8 @@ const ChangeImage = ({ isOpen, onClose }) => {
       alert("Please select an image file.");
       return;
     }
+    if (isSaving) return; 
+    setIsSaving(true); 
   
     const formData = new FormData();
     formData.append("image", selectedFile); 
@@ -41,6 +44,8 @@ const ChangeImage = ({ isOpen, onClose }) => {
     } catch (err) {
       console.error("Error:", err);
       alert("An error occurred while changing the image.");
+    }finally {
+      setIsSaving(false); 
     }
   };
   
@@ -63,6 +68,7 @@ const ChangeImage = ({ isOpen, onClose }) => {
         }
         onClose={onClose}
         onSave={handleSave}
+        isSaving = {isSaving}
       />
     )
   );

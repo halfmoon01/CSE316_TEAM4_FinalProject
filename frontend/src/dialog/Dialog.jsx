@@ -1,7 +1,7 @@
 import React from 'react';
 import '@/css_files/Dialog.css';
 
-const Dialog = ({ title, content, onClose, onSave }) => {
+const Dialog = ({ title, content, onClose, onSave , isSaving}) => {
   return (
     <div className="dialog" onClick={onClose}>
       <div className="dialog-box" onClick={(e) => e.stopPropagation()}>
@@ -17,8 +17,8 @@ const Dialog = ({ title, content, onClose, onSave }) => {
           <button type="button" className="close-button" onClick={onClose}>
             Close
           </button>
-          <button type="button" className="save-button" onClick={onSave}>
-            Save changes
+          <button type="button" className="save-button" onClick={onSave} disabled = {isSaving}>
+          {isSaving ? "Saving..." : "Save changes"}
           </button>
         </div>
       </div>
