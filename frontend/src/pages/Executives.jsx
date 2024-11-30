@@ -10,6 +10,7 @@ const Executives = () => {
   const [selectedExecutive, setSelectedExecutive] = useState(null);
   const { isLoggedIn } = checkAuth();
 
+  // Set the page title
   useEffect(() => {
     document.title = "Executives Page";
 

@@ -6,22 +6,34 @@ import { useNavigate } from "react-router-dom";
 import ChangeGallery from "@/dialog/ChangeGallery";
 
 const EditGallery = () => {
+  // State to store the list of gallery images
   const [imageList, setImageList] = useState([]);
+
+  // Authentication and role check
   const { isLoggedIn, isLoading, isExecutives } = checkAuth();
+
+  // State to manage the dialog visibility for adding new images
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  // To prevent duplicate alerts
   const alerted = useRef(false);
+
+  // Set the page title
   useEffect(() => {
     document.title = "Edit Gallery Page";
   }, []);
 
+  // Fetch gallery images when the component mounts
   useEffect(() => {
     const fetchGallery = async () => {
       try {
         const response = await axios.get(
           "http://localhost:8080/api/get-gallery"
         );
+
+        // Set the image list
         setImageList(response.data.galleryData);
       } catch (error) {
         console.error("Error fetching gallery:", error);
@@ -31,6 +43,7 @@ const EditGallery = () => {
     fetchGallery();
   }, []);
 
+  // Navigates unauthenticated users to the login page
   useEffect(() => {
     if (!isLoading && !isLoggedIn && !alerted.current) {
       alerted.current = true;
@@ -41,6 +54,7 @@ const EditGallery = () => {
     }
   }, [isLoading, isLoggedIn, navigate]);
 
+  // Navigates non-executive users to the home screen
   useEffect(() => {
     if (!isLoading && isLoggedIn && isExecutives <= 0 && !alerted.current) {
       alerted.current = true;
@@ -51,19 +65,23 @@ const EditGallery = () => {
     }
   }, [isLoading, isLoggedIn, isExecutives, navigate]);
 
+  // Show loading screen or deny access if conditions are not met
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
-  
+
   if (isExecutives <= 0) {
     return <h1>No Permission!</h1>;
   }
 
+  // Handle image removal from the gallery
   const handleCancel = async (imageId) => {
     try {
       const response = await axios.delete(
         `http://localhost:8080/api/gallery-delete/${imageId}`
       );
+
+      // Update the image list by filtering out the deleted image
       setImageList((prevList) =>
         prevList.filter((image) => image.imageId !== imageId)
       );
@@ -76,7 +94,7 @@ const EditGallery = () => {
   return (
     <div className="gallery-container">
       <h1>EDIT GALLERY</h1>
-      <hr className = "edit-gallery-line"/>
+      <hr className="edit-gallery-line" />
       <div className="gallery-grid">
         {imageList.map((image) => (
           <div className="gallery-item" key={image.imageId}>

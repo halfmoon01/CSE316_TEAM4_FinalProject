@@ -44,56 +44,69 @@ db.connect((err) => {
 });
 
 app.get("/api/login-track", (req, res) => {
-  const member = req.cookies.member;
+  const member = req.cookies.member; // Retrieve the 'member' cookie from the request
+
   if (member) {
     try {
+      // Parse the 'member' cookie to extract user data
       const memberData = JSON.parse(member);
       return res.status(200).json({
-        loggedIn: true,
-        id: memberData.id,
+        loggedIn: true, // Indicates the user is logged in
+        id: memberData.id, // Include the user's ID in the response
       });
     } catch (error) {
+      // Handle invalid JSON format in the cookie
       console.error("Invalid user cookie format:", error);
-      return res.status(400).json({ error: "Invalid cookie format" });
+      return res.status(400).json({ error: "Invalid cookie format" }); // Return an error response
     }
   }
 
+  // If no 'member' cookie is found, assume the user is not logged in
   return res.status(200).json({
-    loggedIn: false,
-    userId: null,
+    loggedIn: false, // Indicates the user is not logged in
+    userId: null, // No user ID available
   });
 });
 
 app.get("/api/get-member-info", (req, res) => {
-  const { id } = req.query;
+  const { id } = req.query; // Extract the `id` parameter from the query string
 
+  // Validate the `id` parameter
   if (!id || isNaN(id)) {
-    return res.status(400).json({ error: "Invalid or missing id" });
+    return res.status(400).json({ error: "Invalid or missing id" }); // Return a 400 response for invalid or missing IDs
   }
 
+  // Query the database for the member's information using the provided `id`
   db.query("SELECT * FROM members WHERE id = ?", [id], (err, results) => {
     if (err) {
+      // Log and return a 500 response for database errors
       console.error("Database query error:", err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
 
     if (results.length === 0) {
+      // Return a 404 response if no member is found
       return res.status(404).json({ error: "Member not found" });
     }
 
+    // If a member is found, return their information in the response
     const memberInfo = results[0];
     return res.status(200).json({ memberInfo });
   });
 });
 
 app.post("/api/logout", (req, res) => {
+  // Clear the "member" cookie to log the user out
   res.clearCookie("member");
+
+  // Send a response indicating successful logout
   res.status(200).json({ message: "Logged out" });
 });
 
 app.post("/api/signupvalidation", async (req, res) => {
   const { email, memberId, phoneNumber } = req.body;
 
+  // Check if all required fields are provided
   if (!email || !memberId || !phoneNumber) {
     return res.status(400).json({
       success: false,
@@ -103,13 +116,14 @@ app.post("/api/signupvalidation", async (req, res) => {
   }
 
   try {
+    // Validate if memberId already exists
     const memberIdResults = await new Promise((resolve, reject) => {
       db.query(
         "SELECT * FROM members WHERE memberId = ?",
         [memberId],
         (err, results) => {
-          if (err) reject(err);
-          else resolve(results);
+          if (err) reject(err); // Reject promise on error
+          else resolve(results); // Resolve promise with query results
         }
       );
     });
@@ -121,6 +135,7 @@ app.post("/api/signupvalidation", async (req, res) => {
       });
     }
 
+    // Validate if phoneNumber already exists
     const phoneNumberResults = await new Promise((resolve, reject) => {
       db.query(
         "SELECT * FROM members WHERE phoneNumber = ?",
@@ -139,6 +154,7 @@ app.post("/api/signupvalidation", async (req, res) => {
       });
     }
 
+    // Validate if email already exists
     const emailResults = await new Promise((resolve, reject) => {
       db.query(
         "SELECT * FROM members WHERE email = ?",
@@ -176,25 +192,29 @@ app.post("/signup", (req, res) => {
     phoneNumber,
     profileImageUrl,
     position,
-  } = req.body;
+  } = req.body; // Extract user-provided data from the request body
 
+  // SQL query to insert user data into the members table
   const query =
     "INSERT INTO members (memberId, email, password, name, phoneNumber, profileImageUrl, position) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
+  // Array of values to pass into the query
   const values = [
     memberId,
     email,
     password,
     name,
     phoneNumber,
-    profileImageUrl || null,
-    position || "member",
+    profileImageUrl || null, // Default to `null` if no profile image is provided
+    position || "member", // Default to "member" if no position is specified
   ];
 
+  // Execute the query
   db.query(query, values, (err, result) => {
     if (err) {
       console.error("Database insert error:", err);
 
+      // Map specific column errors to user-friendly messages
       const columnErrorMap = {
         phoneNumber: "Phone number too long!",
         memberId: "ID too long!",
@@ -203,24 +223,30 @@ app.post("/signup", (req, res) => {
         email: "Email too long!",
       };
 
+      // Check if the error message matches a known column issue
       const matchedColumn = Object.keys(columnErrorMap).find((column) =>
         err.sqlMessage?.includes(`Data too long for column '${column}'`)
       );
 
+      // Return a user-friendly error message if a match is found
       if (matchedColumn) {
         return res.status(400).json({ error: columnErrorMap[matchedColumn] });
       }
 
+      // Return a generic error message for other database issues
       return res.status(500).json({ error: "Database insert error" });
     }
 
+    // Return a success message if the insert is successful
     res.status(201).json({ message: "User registered successfully!" });
   });
 });
 
 app.post("/signin", (req, res) => {
+  // Extract login credentials from the request body
   const { memberId, password } = req.body;
 
+  // Query the database for a user with the given memberId
   db.query(
     "SELECT * FROM members WHERE memberId = ?",
     [memberId],
@@ -230,16 +256,20 @@ app.post("/signin", (req, res) => {
         return res.status(500).json({ error: "Internal Server Error" });
       }
 
+      // If no user is found, return a 401 Unauthorized response
       if (results.length === 0) {
         return res.status(401).json({ error: "Invalid ID or password" });
       }
 
+      // Get the user data from the query result
       const member = results[0];
 
       if (member.password !== password) {
+        // Return 401 if the password is incorrect
         return res.status(401).json({ error: "Invalid ID or password" });
       }
 
+      // Create a cookie to store user session information
       const memberCookie = JSON.stringify({
         id: member.id,
       });
@@ -248,9 +278,10 @@ app.post("/signin", (req, res) => {
         httpOnly: true,
         secure: false,
         sameSite: "lax",
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: 24 * 60 * 60 * 1000, // Cookie expiration time (1 day)
       });
 
+      // Respond with a success message
       res.status(200).json({
         message: "Login successful",
       });
@@ -432,46 +463,60 @@ app.post("/change-image", upload.single("image"), async (req, res) => {
 });
 
 app.get("/api/get-announcement", (req, res) => {
+  // Execute a query to fetch all rows from the `announcement` table
   db.query("SELECT * FROM announcement", (err, results) => {
     if (err) {
       console.error("Database query error:", err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
 
+    // Check if the query returned any results
     if (results.length === 0) {
+      // Return a 404 response if no announcement data is found
       return res.status(404).json({ error: "Internal Server Error" });
     }
 
+    // Extract the first announcement entry (assuming it's the latest or only entry)
     const announcementData = results[0];
+
+    // Return the announcement data with a 200 OK response
     return res.status(200).json({ announcementData });
   });
 });
 
 app.post("/api/edit-announcement", (req, res) => {
+  // Extract `title` and `content` from the request body
   const { title, content } = req.body;
 
+  // SQL query to update the `announcement` table
   const query = "UPDATE announcement SET title = ?, content = ?";
 
+  // Execute the query with the provided `title` and `content`
   db.query(query, [title, content], (err, result) => {
     if (err) {
       console.error("Error updating announcement:", err);
 
+      // Map specific column errors to user-friendly messages
       const columnErrorMap = {
         title: "Title is too long!",
         content: "Content is too long!",
       };
 
+      // Check if the error matches any known column issues
       const matchedColumn = Object.keys(columnErrorMap).find((column) =>
         err.sqlMessage?.includes(`Data too long for column '${column}'`)
       );
 
+      // Return a 400 Bad Request with a specific error message if applicable
       if (matchedColumn) {
         return res.status(400).json({ error: columnErrorMap[matchedColumn] });
       }
 
+      // Return a generic 500 Internal Server Error for other issues
       return res.status(500).json({ error: "Database update error" });
     }
 
+    // Respond with success if the update is successful
     res.status(200).json({ message: "Updated announcement successfully!" });
   });
 });
@@ -479,27 +524,34 @@ app.post("/api/edit-announcement", (req, res) => {
 app.post("/add-image", upload.single("image"), async (req, res) => {
   const file = req.file;
 
+  // Check if an image file is provided
   if (!file) {
     return res.status(400).json({ message: "Image file is required." });
   }
 
   try {
+    // Upload the image file to Cloudinary
     const uploadResponse = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        { folder: "gallery_images" },
+        { folder: "gallery_images" }, // Specify the folder in Cloudinary
         (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
+          if (error) reject(error); // Handle upload error
+          else resolve(result); // Handle upload success
         }
       );
 
+      // Create a buffer stream to pipe the file to Cloudinary
       const bufferStream = new stream.PassThrough();
       bufferStream.end(file.buffer);
+
+      // Pipe the image file buffer
       bufferStream.pipe(uploadStream);
     });
 
+    // Get the uploaded image URL
     const imageUrl = uploadResponse.secure_url;
 
+    // Insert the image URL into the database
     const query = "INSERT INTO galleryitems (imageUrl) VALUES (?)";
     db.query(query, [imageUrl], (err) => {
       if (err) {
@@ -509,47 +561,63 @@ app.post("/add-image", upload.single("image"), async (req, res) => {
           .json({ message: "Failed to save image to database." });
       }
 
+      // Send success response with the image URL
       res.status(200).json({
         message: "Image uploaded and added to database successfully!",
         imageUrl,
       });
     });
   } catch (error) {
+    // Handle errors during Cloudinary upload
     console.error("Error uploading to Cloudinary:", error);
     res.status(500).json({ message: "Failed to upload image." });
   }
 });
 
 app.get("/api/get-gallery", (req, res) => {
+  // Query the database to retrieve all gallery items
   db.query("SELECT * FROM galleryitems", (err, results) => {
     if (err) {
       console.error("Database query error:", err);
+      // Return a 500 Internal Server Error if the query fails
       return res.status(500).json({ error: "Internal Server Error" });
     }
 
+    // Check if the query returned no results
     if (results.length === 0) {
+      // Return a 404 Not Found if the gallery is empty
       return res.status(404).json({ error: "Internal Server Error" });
     }
 
+    // Store the query results in a variable
     const galleryData = results;
+
+    // Return the gallery data with a 200 OK response
     return res.status(200).json({ galleryData });
   });
 });
 
 app.delete("/api/gallery-delete/:imageId", (req, res) => {
+  // Extract the imageId from the route parameters
   const { imageId } = req.params;
 
   const query = "DELETE FROM galleryitems WHERE imageId = ?";
   db.query(query, [imageId], (err, result) => {
     if (err) {
+      // SQL query to delete the image by ID
       console.error("Error deleting image from database:", err);
+
+      // Return a 500 Internal Server Error if the query fails
       return res.status(500).json({ message: "Internal Server Error" });
     }
 
+    // Check if any rows were affected (i.e., if the image was found and deleted)
     if (result.affectedRows === 0) {
+      // Return a 404 Not Found if no matching image ID exists in the database
       return res.status(404).json({ message: "Image not found" });
     }
 
+    // Return a success response if the image was deleted
     res.status(200).json({ message: "Image deleted successfully" });
   });
 });
@@ -557,7 +625,7 @@ app.delete("/api/gallery-delete/:imageId", (req, res) => {
 app.get("/members/:id", (req, res) => {
   const userId = parseInt(req.params.id);
 
-  const query = 'SELECT * FROM members WHERE not id = ?';
+  const query = "SELECT * FROM members WHERE not id = ?";
 
   db.query(query, [userId], (err, results) => {
     if (err) {
@@ -572,50 +640,52 @@ app.get("/members/:id", (req, res) => {
   });
 });
 
-app.delete('/members/:id', (req, res) => {
-  const memberId = parseInt(req.params.id, 10); 
+app.delete("/members/:id", (req, res) => {
+  const memberId = parseInt(req.params.id, 10);
 
   if (isNaN(memberId)) {
-    return res.status(400).json({ message: 'Invalid member ID.' });
+    return res.status(400).json({ message: "Invalid member ID." });
   }
 
-  const checkExecutiveQuery = 'SELECT isExecutives FROM members WHERE id = ?';
+  const checkExecutiveQuery = "SELECT isExecutives FROM members WHERE id = ?";
 
   db.query(checkExecutiveQuery, [memberId], (err, results) => {
     if (err) {
-      console.error('Error deleting member:', err);
-      return res.status(500).json({ message: 'Failed to check member rank' });
+      console.error("Error deleting member:", err);
+      return res.status(500).json({ message: "Failed to check member rank" });
     }
 
     if (results.length === 0) {
-      return res.status(404).json({ message: 'Member not found.' });
-    }
-    
-    const memberRank = results[0].isExecutives;
-    // reject deletion of Cheif Executive
-    if(memberRank === 2){
-      return res.status(403).json({message: 'Cannot delete a Chief Executive. '});
+      return res.status(404).json({ message: "Member not found." });
     }
 
-    const deleteQuery = 'DELETE FROM members WHERE id = ?';
+    const memberRank = results[0].isExecutives;
+    // reject deletion of Cheif Executive
+    if (memberRank === 2) {
+      return res
+        .status(403)
+        .json({ message: "Cannot delete a Chief Executive. " });
+    }
+
+    const deleteQuery = "DELETE FROM members WHERE id = ?";
     db.query(deleteQuery, [memberId], (err, result) => {
       if (err) {
-        console.error('Error deleting member:', err);
-        return res.status(500).json({ message: 'Failed to delete member.' });
+        console.error("Error deleting member:", err);
+        return res.status(500).json({ message: "Failed to delete member." });
       }
       if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Member not found.' });
+        return res.status(404).json({ message: "Member not found." });
       }
-      return res.status(200).json({ message: 'Member deleted successfully.' });
+      return res.status(200).json({ message: "Member deleted successfully." });
     });
   });
 });
 
-
 app.get("/manage-account/members/:memberId", (req, res) => {
   const { memberId } = req.params;
 
-  const getMemberQuery = "SELECT id, isExecutives, position FROM members WHERE id = ?";
+  const getMemberQuery =
+    "SELECT id, isExecutives, position FROM members WHERE id = ?";
   db.query(getMemberQuery, [memberId], (err, results) => {
     if (err) {
       console.error("Error fetching member data:", err);
@@ -630,7 +700,6 @@ app.get("/manage-account/members/:memberId", (req, res) => {
   });
 });
 
-
 app.put("/manage-account/members/:memberId/position", (req, res) => {
   const { memberId } = req.params;
   const { position, isExecutive } = req.body;
@@ -638,10 +707,13 @@ app.put("/manage-account/members/:memberId/position", (req, res) => {
   const loggedInUserIsExecutives = req.isExecutives;
 
   if (!position || isExecutive === undefined) {
-    return res.status(400).json({ message: "Position and isExecutive are required." });
+    return res
+      .status(400)
+      .json({ message: "Position and isExecutive are required." });
   }
 
-  const getCurrentMemberQuery = "SELECT id, isExecutives FROM members WHERE id = ?";
+  const getCurrentMemberQuery =
+    "SELECT id, isExecutives FROM members WHERE id = ?";
   db.query(getCurrentMemberQuery, [memberId], (err, results) => {
     if (err) {
       console.error("Error fetching member data:", err);
@@ -657,13 +729,16 @@ app.put("/manage-account/members/:memberId/position", (req, res) => {
     // if it is has higher or same isExecutives level than the logged in person -> reject
     if (currentMember.isExecutives >= loggedInUserIsExecutives) {
       return res.status(403).json({
-        message: "You can only modify the position of someone with the lower rank than you.",
+        message:
+          "You can only modify the position of someone with the lower rank than you.",
       });
     }
 
-    // member cannot be Cheif Executive right away 
+    // member cannot be Cheif Executive right away
     if (currentMember.isExecutives === 0 && isExecutive === 2) {
-      return res.status(403).json({ message: "Cannot change directly from Member to Chief Executive." });
+      return res.status(403).json({
+        message: "Cannot change directly from Member to Chief Executive.",
+      });
     }
 
     // Chief Executive promotion
@@ -672,10 +747,13 @@ app.put("/manage-account/members/:memberId/position", (req, res) => {
       db.query(checkChiefQuery, (err, chiefResults) => {
         if (err) {
           console.error("Error checking Chief Executive Manager:", err);
-          return res.status(500).json({ message: "Failed to check Chief Executive Manager." });
+          return res
+            .status(500)
+            .json({ message: "Failed to check Chief Executive Manager." });
         }
 
-        const existingChiefId = chiefResults.length > 0 ? chiefResults[0].id : null;
+        const existingChiefId =
+          chiefResults.length > 0 ? chiefResults[0].id : null;
         // downgrade loggedin member
         if (existingChiefId && existingChiefId !== parseInt(memberId, 10)) {
           const downgradeQuery =
@@ -683,7 +761,9 @@ app.put("/manage-account/members/:memberId/position", (req, res) => {
           db.query(downgradeQuery, [existingChiefId], (err) => {
             if (err) {
               console.error("Error downgrading Chief Executive:", err);
-              return res.status(500).json({ message: "Failed to downgrade Chief Executive." });
+              return res
+                .status(500)
+                .json({ message: "Failed to downgrade Chief Executive." });
             }
 
             const downgraded = {
@@ -703,8 +783,15 @@ app.put("/manage-account/members/:memberId/position", (req, res) => {
     }
   });
 
-  const updatePosition = (memberId, position, isExecutive, res, downgraded = null) => {
-    const updateQuery = "UPDATE members SET position = ?, isExecutives = ? WHERE id = ?";
+  const updatePosition = (
+    memberId,
+    position,
+    isExecutive,
+    res,
+    downgraded = null
+  ) => {
+    const updateQuery =
+      "UPDATE members SET position = ?, isExecutives = ? WHERE id = ?";
     db.query(updateQuery, [position, isExecutive, memberId], (err) => {
       if (err) {
         console.error("Error updating position:", err);
@@ -722,7 +809,8 @@ app.put("/manage-account/members/:memberId/position", (req, res) => {
 });
 
 app.get("/executives", (req, res) => {
-  const query = "SELECT * FROM members WHERE isExecutives = 1 or isExecutives = 2 ORDER BY isExecutives DESC"; 
+  const query =
+    "SELECT * FROM members WHERE isExecutives = 1 or isExecutives = 2 ORDER BY isExecutives DESC";
   db.query(query, (err, results) => {
     if (err) {
       console.error("Database query error:", err);

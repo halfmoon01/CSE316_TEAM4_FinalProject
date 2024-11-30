@@ -4,17 +4,27 @@ import { checkAuth } from "../AuthTracker";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+
 const Announcement = () => {
+
+  // Set the page title
   useEffect(() => {
     document.title = "Announcement Page";
   }, []);
 
+  // Destructure authentication status
   const { isLoggedIn, isLoading } = checkAuth();
+
+  // State for announcement title and content
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+
   const navigate = useNavigate();
+
+  // To avoid duplicate alerts
   const alerted = useRef(false);
 
+  // Navigates unauthenticated users to the login page
   useEffect(() => {
     if (!isLoading && !isLoggedIn && !alerted.current) {
       alerted.current = true;
@@ -25,7 +35,7 @@ const Announcement = () => {
     }
   }, [isLoading, isLoggedIn, navigate]);
 
-
+  // Fetch announcement data from the server on component mount
   useEffect(() => {
     const loadAnnouncement = async () => {
       try {
@@ -44,6 +54,7 @@ const Announcement = () => {
     loadAnnouncement();
   }, []);
 
+  // Show loading screen or deny access if conditions are not met
   if (isLoading) {
     return <h1>Loading...</h1>;
   }

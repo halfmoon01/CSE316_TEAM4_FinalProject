@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "@/css_files/pageNotFound.css";
 
 const NotFound = () => {
+  // Set the page title
   useEffect(() => {
     document.title = "Page Not Found";
   }, []);

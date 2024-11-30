@@ -18,6 +18,7 @@ const Members = () => {
   const navigate = useNavigate();
   const alerted = useRef(false);
 
+  // Set the page title
   useEffect(() => {
     document.title = "Members Page";
 
@@ -40,6 +41,7 @@ const Members = () => {
     fetchMembers();
   }, [id]);
 
+  // Navigates unauthenticated users to the login page
   useEffect(() => {
     if (!isLoading && !isLoggedIn && !alerted.current) {
       alerted.current = true;
@@ -50,6 +52,7 @@ const Members = () => {
     }
   }, [isLoading, isLoggedIn, navigate]);
 
+  // Navigates non-executive users to the home screen
   useEffect(() => {
     if (!isLoading && isLoggedIn && isExecutives <= 0 && !alerted.current) {
       alerted.current = true;
@@ -60,6 +63,7 @@ const Members = () => {
     }
   }, [isLoading, isLoggedIn, isExecutives, navigate]);
 
+  // Show loading screen or deny access if conditions are not met
   if (isLoading) {
     return <h1>Loading...</h1>;
   }

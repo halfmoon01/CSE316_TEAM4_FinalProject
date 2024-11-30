@@ -12,12 +12,15 @@ const Login = () => {
   const { isLoggedIn, setIsLoggedIn, isLoading } = checkAuth();
   const navigate = useNavigate();
 
+  // Set the page title
   useEffect(() => {
     document.title = "Login Page";
   }, []);
 
+  // To prevent duplicate alerts
   const alerted = useRef(false);
 
+  // Navigates already logged-in users to the home screen.
   useEffect(() => {
     if (!isLoading && isLoggedIn && !alerted.current) {
       alerted.current = true;
@@ -27,6 +30,7 @@ const Login = () => {
     }
   }, [isLoggedIn]);
 
+  // Show loading screen or deny access if conditions are not met
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
@@ -35,9 +39,11 @@ const Login = () => {
     return <h1>No Permission!</h1>;
   }
 
+  // Handle login form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Hash the user's password before sending to the server
     const hashed = hashutil(memberId, password);
 
     try {
@@ -45,17 +51,23 @@ const Login = () => {
         "http://localhost:8080/signin",
         {
           memberId,
-          password: hashed, // 전송할 데이터
+          password: hashed,
         },
         {
-          withCredentials: true, // 옵션: 쿠키 포함
+          // Include credentials for secure communication
+          withCredentials: true,
         }
       );
+
+      // Login successful: update state and navigate to the Welcome Page
       alert("Login successful! Welcome!");
       setIsLoggedIn(true);
-      navigate("/Welcome"); // 로그인 성공 시 대시보드로 이동
+      navigate("/Welcome");
+
+      // Reload the page to refresh state
       window.location.reload();
     } catch (error) {
+      // Handle login errors
       alert("Invalid ID or password");
     }
   };

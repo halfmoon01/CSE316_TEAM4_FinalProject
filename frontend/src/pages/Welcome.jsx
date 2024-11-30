@@ -4,15 +4,19 @@ import { checkAuth } from "../AuthTracker";
 import { useNavigate, Link } from "react-router-dom";
 
 const Welcome = () => {
+
+  // Set the page title
   useEffect(() => {
     document.title = "Welcome Page";
   }, []);
+
   const { isLoggedIn, isLoading, name } = checkAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isLoading) return;
 
+    // Navigates unauthenticated users to the login page
     if (!isLoggedIn) {
       alert(
         "You have to sign in first in order to access the page!\nNavigating to the Login Page..."
@@ -21,6 +25,7 @@ const Welcome = () => {
     }
   }, [isLoading, isLoggedIn, navigate]);
 
+  // Show loading screen or deny access if conditions are not met
   if (isLoading) {
     return <h1>Loading...</h1>;
   }

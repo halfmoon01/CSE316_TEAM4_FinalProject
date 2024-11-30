@@ -1,7 +1,10 @@
 import { useEffect } from "react";
 import "@/css_files/advisoryCommittee.css";
 
+
 const AdvisoryCommittee = () => {
+
+  // Set the page title
   useEffect(() => {
     document.title = "Advisory Committee Page";
   }, []);

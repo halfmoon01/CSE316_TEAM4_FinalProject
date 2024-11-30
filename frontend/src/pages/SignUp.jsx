@@ -6,23 +6,29 @@ import axios from "axios";
 import { checkAuth } from "../AuthTracker";
 
 const SignUp = () => {
+  // States to manage user input for the sign-up form
   const [memberId, setMemberId] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const profileImageUrl = null;
-  const position = "member";
   const navigate = useNavigate();
   const { isLoggedIn, isLoading } = checkAuth();
 
+  // Default values for optional fields
+  const profileImageUrl = null;
+  const position = "member";
+
+  // Set the page title
   useEffect(() => {
     document.title = "Sign Up Page";
   }, []);
 
+  // To prevent duplicate alerts
   const alerted = useRef(false);
 
+  // Navigates already logged-in users to the home screen.
   useEffect(() => {
     if (!isLoading && isLoggedIn && !alerted.current) {
       alerted.current = true;
@@ -31,7 +37,8 @@ const SignUp = () => {
       navigate("/HomeScreen");
     }
   }, [isLoggedIn]);
-  
+
+  // Show loading screen or deny access if conditions are not met
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
@@ -40,15 +47,15 @@ const SignUp = () => {
     return <h1>No Permission!</h1>;
   }
 
+  // Helper function that validates the form before submission
   const ValidateSignUp = async () => {
-    // 비밀번호 확인
     if (!isPasswordValid(password, passwordCheck)) {
       alert("Confirm password is not the same as password.");
       return false;
     }
 
+    // If the validation above is fulfilled, validate user-provided email, ID, and phone number via API
     try {
-      // 서버 검증 요청
       const response = await axios.post(
         "http://localhost:8080/api/signupvalidation",
         {
@@ -59,6 +66,7 @@ const SignUp = () => {
       );
 
       if (!response.data.success) {
+        // Show validation failure message
         alert(response.data.message);
         return false;
       }
@@ -71,20 +79,24 @@ const SignUp = () => {
     }
   };
 
-  // 비밀번호 검증 로직 분리
+  // Helper function to check if passwords match
   const isPasswordValid = (password, passwordCheck) => {
     return password === passwordCheck;
   };
 
+  // Handles form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Run validation checks
     const isValid = await ValidateSignUp();
     if (!isValid) return;
 
+    // Hash the password for secure transmission
     const hashed = hashutil(memberId, password);
 
     try {
+      // // Submit the sign-up request to the server
       await axios.post("http://localhost:8080/signup", {
         memberId,
         email,
@@ -96,8 +108,11 @@ const SignUp = () => {
       });
 
       alert("Sign up successful!\nTry logging in with the account!");
+
+      // Navigate to login page
       navigate("/LogIn");
     } catch (error) {
+      // Handle sign-up errors
       alert("Failed to sign up. Please try again.");
     }
   };
