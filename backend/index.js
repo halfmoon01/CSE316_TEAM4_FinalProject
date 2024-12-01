@@ -456,12 +456,18 @@ app.post("/change-image", upload.single("image"), async (req, res) => {
   const { id } = req.body;
   const file = req.file;
 
-  if (!file || !id) {
-    return res.status(400).json({ message: "Image and ID are required." });
+  if (!id) {
+    return res.status(400).json({ message: "ID is required." });
   }
 
   try {
-    const uploadResponse = await new Promise((resolve, reject) => {
+    let imageUrl;
+
+    if (!file) {
+      // If no file is uploaded, use the default image URL
+      imageUrl = "/user.png"; // Ensure this path is accessible in your application
+    }else{
+      const uploadResponse = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         { folder: "user_images", public_id: `user_${id}` },
         (error, result) => {
@@ -477,8 +483,8 @@ app.post("/change-image", upload.single("image"), async (req, res) => {
       bufferStream.pipe(uploadStream);
     });
 
-    const imageUrl = uploadResponse.secure_url;
-
+    imageUrl = uploadResponse.secure_url;
+  }
     const query = "UPDATE members SET  profileImageUrl = ? WHERE memberId = ?";
     db.query(query, [imageUrl, id], (err) => {
       if (err) {
@@ -487,7 +493,9 @@ app.post("/change-image", upload.single("image"), async (req, res) => {
       }
 
       res.status(200).json({
-        message: "Image uploaded and saved successfully!",
+        message: file
+          ? "Image uploaded and saved successfully!"
+          : "Default image set successfully!",
         imageUrl,
       });
     });

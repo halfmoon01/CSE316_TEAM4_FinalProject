@@ -22,9 +22,32 @@ const ChangeImage = ({ isOpen, onClose }) => {
 
   const handleSave = async () => {
     if (!selectedFile) {
-      alert("Please select an image file.");
+      const formData = new FormData();
+      formData.append("defaultImage", "/user.png");  // Append the selected default file
+      formData.append("id", memberId);  // Append the authenticated user ID
+      
+      try {
+        const response = await fetch("http://localhost:8080/change-image", {
+          method: "POST",
+          body: formData, 
+        });
+        if (response.ok) {
+          alert("Image changed successfully!");
+          window.location.reload();  // Reload the page to reflect changes
+          onClose(); 
+        } else {
+          const data = await response.json();
+          alert(data.message || "Failed to change image.");
+        }
+      } catch (err) {
+        console.error("Error:", err);
+        alert("An error occurred while changing the image.");
+      }finally {
+        setIsSaving(false);  // Reset saving status
+      }
       return;
-    }
+  }
+
     if (isSaving) return;  // Prevent multiple save actions
     setIsSaving(true);  // Set saving status to true
   
@@ -35,13 +58,13 @@ const ChangeImage = ({ isOpen, onClose }) => {
     try {
       const response = await fetch("http://localhost:8080/change-image", {
         method: "POST",
-        body: formData, 
+        body: formData,
       });
   
       if (response.ok) {
         alert("Image changed successfully!");
-        window.location.reload();  // Reload the page to reflect changes
-        onClose(); 
+        window.location.reload(); // Reload the page to reflect changes
+        onClose();
       } else {
         const data = await response.json();
         alert(data.message || "Failed to change image.");
@@ -49,8 +72,8 @@ const ChangeImage = ({ isOpen, onClose }) => {
     } catch (err) {
       console.error("Error:", err);
       alert("An error occurred while changing the image.");
-    }finally {
-      setIsSaving(false);  // Reset saving status
+    } finally {
+      setIsSaving(false); // Reset saving status
     }
   };
   
