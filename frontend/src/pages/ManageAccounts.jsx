@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import "@/css_files/ManageAccounts.css";
-import UserIcon from "../../public/user.png";
 import { checkAuth } from "../AuthTracker";
 import { useNavigate } from "react-router-dom";
 
@@ -12,11 +11,11 @@ const Members = () => {
     "Treasurer",
     "Advisor",
     "Member",
-  ]);
+  ]); // Predefined positions
 
   const { id, isExecutives, isLoading, isLoggedIn } = checkAuth();
   const navigate = useNavigate();
-  const alerted = useRef(false);
+  const alerted = useRef(false); // Ref to prevent multiple alerts
 
   // Set the page title
   useEffect(() => {
@@ -158,6 +157,7 @@ const Members = () => {
   
   return (
     <>
+    {/* Page Heading */}
     <div className="myinfo-heading">
           <h1 className="myInfo-title">Manage Accounts</h1>
           <hr />
@@ -166,13 +166,15 @@ const Members = () => {
         {members.map((member) => (
           <div className="member-card" key={member.id}>
             <div className="member-image">
-              <img src={member.profileImageUrl || UserIcon} alt="Member" />
+              <img src={member.profileImageUrl || "/user.png"} alt="Member" />
             </div>
+            {/* Member Details */}
             <div className="member-content">
               <p>Name: {member.name}</p>
               <p>ID: {member.memberId}</p>
               <p>Email: {member.email}</p>
               <p>Phone-number: {member.phoneNumber}</p>
+              {/* Position Selector */}
               <div className="position-selector">
                 <p>Position:</p>
                 <select

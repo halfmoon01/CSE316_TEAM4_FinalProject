@@ -5,7 +5,6 @@ import ChangeImage from "@/dialog/ChangeImage";
 import ChangeName from "@/dialog/ChangeName";
 import ChangeEmail from "@/dialog/ChangeEmail";
 import ChangePhone from "@/dialog/ChangePhone";
-import UserIcon from "../../public/user.png";
 import { Person, Email, Phone, Lock, Work, Badge } from "@mui/icons-material";
 
 import { checkAuth } from "../AuthTracker";
@@ -24,6 +23,7 @@ const MyInformation = () => {
     position,
   } = checkAuth();
 
+  // State variables for managing dialog visibility
   const [isImageOpen, setIsImageOpen] = useState(false);
   const [isPwdOpen, setIsPwdOpen] = useState(false);
   const [isNameOpen, setIsNameOpen] = useState(false);
@@ -58,28 +58,29 @@ const MyInformation = () => {
 
   return (
     <>
+    {/* Page Header */}
       <div className="myinfo-heading">
         <h1 className="myInfo-title">My Information</h1>
         <hr />
       </div>
-
+       {/* User information container */}
       <div className="myInfo-container">
         <div className="info-block">
           <div className="profile-section">
             <img
-              src={profileImageUrl || UserIcon}
+              src={profileImageUrl || "/user.png"} // Display user's profile image or default image
               className="profile-image"
               alt="Profile"
             />
             <button
               className="change-button"
-              onClick={() => setIsImageOpen(true)}
+              onClick={() => setIsImageOpen(true)} // Open image change dialog
             >
               Change Image
             </button>
           </div>
         </div>
-
+        {/* Information grid */}
         <div className="info-grid">
           <div className="info-card">
             <h2 className="info-label">
@@ -88,7 +89,7 @@ const MyInformation = () => {
             <p className="info-value">{name}</p>
             <button
               className="change-button"
-              onClick={() => setIsNameOpen(true)}
+              onClick={() => setIsNameOpen(true)}  // Open name change dialog
             >
               Edit
             </button>
@@ -100,7 +101,7 @@ const MyInformation = () => {
             <p className="info-value">{email}</p>
             <button
               className="change-button"
-              onClick={() => setIsEmailOpen(true)}
+              onClick={() => setIsEmailOpen(true)} // Open email change dialog
             >
               Edit
             </button>
@@ -112,7 +113,7 @@ const MyInformation = () => {
             <p className="info-value">{phoneNumber}</p>
             <button
               className="change-button"
-              onClick={() => setIsPhoneOpen(true)}
+              onClick={() => setIsPhoneOpen(true)} // Open phone change dialog
             >
               Edit
             </button>
@@ -121,10 +122,10 @@ const MyInformation = () => {
             <h2 className="info-label">
               <Lock className="icon" /> Password
             </h2>
-            <p className="info-value">•••••••</p>
+            <p className="info-value">•••••••</p> {/* Masked password */}
             <button
               className="change-button"
-              onClick={() => setIsPwdOpen(true)}
+              onClick={() => setIsPwdOpen(true)} // Open password change dialog
             >
               Edit
             </button>

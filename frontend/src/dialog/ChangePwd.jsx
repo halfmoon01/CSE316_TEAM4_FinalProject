@@ -4,8 +4,8 @@ import { hashutil } from '../Hashutil.js'; // Import hashutil for password hashi
 import { checkAuth } from '../AuthTracker';
 
 const ChangePwd = ({ isOpen, onClose }) => {
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState(''); // State to store the old password
+  const [newPassword, setNewPassword] = useState('');  // State to store the new password
   const { memberId } = checkAuth(); // Get authenticated user ID
 
   const handleSave = async () => {
@@ -19,6 +19,7 @@ const ChangePwd = ({ isOpen, onClose }) => {
       const oldHashedPassword = hashutil(memberId, oldPassword.trim());
       const newHashedPassword = hashutil(memberId, newPassword.trim());
 
+      // Prepare the request payload
       const requestBody = {
         oldHashedPassword,
         newHashedPassword,
@@ -35,9 +36,10 @@ const ChangePwd = ({ isOpen, onClose }) => {
 
       if (response.ok) {
         alert('Password changed successfully!');
-        window.location.reload();
+        window.location.reload();  // Reload the page to reflect changes
         onClose(); // Close dialog
-      } else {
+      } else { 
+        // Handle unsuccessful responses
         const data = await response.json();
         alert(data.message || 'Failed to change password.');
       }
@@ -62,7 +64,7 @@ const ChangePwd = ({ isOpen, onClose }) => {
               className="new-input"
               value={oldPassword}
               onChange={(e) => 
-                setOldPassword(e.target.value)
+                setOldPassword(e.target.value) // Update state on input change
               }
             />
             </div>
@@ -75,7 +77,7 @@ const ChangePwd = ({ isOpen, onClose }) => {
               className="new-input"
               value={newPassword}
               onChange={(e) => 
-                setNewPassword(e.target.value)
+                setNewPassword(e.target.value) // Update state on input change
               }
             />
             </div>

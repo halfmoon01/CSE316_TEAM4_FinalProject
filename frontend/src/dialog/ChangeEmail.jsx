@@ -4,18 +4,19 @@ import { checkAuth } from "../AuthTracker";
 
 
 const ChangeEmail = ({ isOpen, onClose }) => {
-  const [newEmail, setNewEmail] = useState('');
+  const [newEmail, setNewEmail] = useState(''); // State to manage the new email input
   const {memberId} = checkAuth();
 
   const handleSave = async () => {
     if (!newEmail.trim()) {
-      alert('Email cannot be empty');
+      alert('Email cannot be empty');  // Alert if the email is not provided
       return;
     }
+ // Regular expression to validate email format
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(newEmail)) {
-      alert('Please enter a valid email address.');
+      alert('Please enter a valid email address.'); // Alert if the email is invalid
       return;
     }
   
@@ -25,7 +26,7 @@ const ChangeEmail = ({ isOpen, onClose }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ newEmail, memberId}), 
+        body: JSON.stringify({ newEmail, memberId}), // Include the new email and memberId in the request body
       });
   
       if (response.ok) {
@@ -43,7 +44,7 @@ const ChangeEmail = ({ isOpen, onClose }) => {
   };
   
   return (
-    isOpen && (
+    isOpen && ( // Render the dialog only if `isOpen` is true
       <Dialog
         title="Change your Email"
         content={
@@ -57,6 +58,7 @@ const ChangeEmail = ({ isOpen, onClose }) => {
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
               />
+              {/* Inline validation message for invalid email */}
               {!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail) && newEmail.length > 0 && (
                 <p style={{ color: 'red' }}>Please enter a valid email address.</p>
               )}

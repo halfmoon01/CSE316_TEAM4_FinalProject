@@ -5,24 +5,24 @@ import { checkAuth } from "../AuthTracker";
 const ChangeGallery = ({ isOpen, onClose }) => {
   const [selectedFile, setSelectedFile] = useState(null); 
   const [fileName, setFileName] = useState('');
-  const [isSaving, setIsSaving] = useState(false); 
+  const [isSaving, setIsSaving] = useState(false);  // State to track saving status
   const {memberId} = checkAuth();
   
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files[0]; // Get the first selected file
     if (file) {
-      setSelectedFile(file);
-      setFileName(file.name); 
+      setSelectedFile(file); // Update the selected file state
+      setFileName(file.name);  // Update the file name state
     }
   };
   
   const handleSave = async () => {
     if (!selectedFile) {
-      alert("Please select an image file.");
+      alert("Please select an image file."); // Alert if no file is selected
       return;
     }
-    if (isSaving) return; 
-    setIsSaving(true);
+    if (isSaving) return;  // Prevent multiple save actions
+    setIsSaving(true); // Set saving status to true
   
     const formData = new FormData();
     formData.append("image", selectedFile); 
@@ -36,7 +36,7 @@ const ChangeGallery = ({ isOpen, onClose }) => {
       if (response.ok) {
         const data = await response.json();
         alert("Image added successfully!");
-        window.location.reload();
+        window.location.reload(); // Reload the page to reflect the change
         onClose(); 
       } else {
         const data = await response.json();
@@ -53,6 +53,7 @@ const ChangeGallery = ({ isOpen, onClose }) => {
   
   return (
     //isOpen -> open dialog
+    // Render the dialog only if `isOpen` is true
     isOpen && (
       <GalleryDialog
         title="Add New Image"
@@ -64,14 +65,14 @@ const ChangeGallery = ({ isOpen, onClose }) => {
               id="fileInput" 
               className="new-input" 
               onChange={handleFileChange} 
-              accept="image/*"
+              accept="image/*" // Restrict file types to images
               />
             </div>
           </>
         }
         onClose={onClose}
         onSave={handleSave}
-        isSaving = {isSaving}
+        isSaving = {isSaving} // Pass the saving state to the dialog
       />
     )
   );

@@ -22,6 +22,7 @@ app.use(
   })
 );
 
+//db connection configuration
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -29,6 +30,7 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME,
 });
 
+//cloudianry connection configuration
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
@@ -289,8 +291,9 @@ app.post("/signin", (req, res) => {
   );
 });
 
+// Endpoint to update a user's name 
 app.post("/change-name", (req, res) => {
-  const { newName, memberId } = req.body;
+  const { newName, memberId } = req.body; // Extract new name and member ID
 
   if (!newName) {
     return res
@@ -314,6 +317,7 @@ app.post("/change-name", (req, res) => {
   });
 });
 
+// Endpoint to update a user's email
 app.post("/change-email", (req, res) => {
   const { newEmail, memberId } = req.body;
 
@@ -622,9 +626,10 @@ app.delete("/api/gallery-delete/:imageId", (req, res) => {
   });
 });
 
+
 app.get("/members/:id", (req, res) => {
   const userId = parseInt(req.params.id);
-
+  // get member list without logined person 
   const query = "SELECT * FROM members WHERE not id = ?";
 
   db.query(query, [userId], (err, results) => {
@@ -810,6 +815,7 @@ app.put("/manage-account/members/:memberId/position", (req, res) => {
 
 app.get("/executives", (req, res) => {
   const query =
+  // only get executives (where level is 1 or 2)
     "SELECT * FROM members WHERE isExecutives = 1 or isExecutives = 2 ORDER BY isExecutives DESC";
   db.query(query, (err, results) => {
     if (err) {

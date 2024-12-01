@@ -18,13 +18,13 @@ const ChangeName = ({ isOpen, onClose }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ newName, memberId}),
+        body: JSON.stringify({ newName, memberId}), // Include the new name and user ID in the request body
       });
   
       if (response.ok) {
         alert('Name changed successfully!');
-        window.location.reload();
-        onClose();
+        window.location.reload(); // Reload the page to reflect changes
+        onClose(); // Close the dialog
       } else {
         const data = await response.json();
         alert(data.message || 'Failed to change name.');
@@ -36,6 +36,7 @@ const ChangeName = ({ isOpen, onClose }) => {
   }
 
   return (
+     // Render the dialog only if `isOpen` is true
     isOpen && (
       <Dialog
         title="Change your name"
@@ -48,7 +49,7 @@ const ChangeName = ({ isOpen, onClose }) => {
               id="newName"
               className="new-input"
               value={newName}
-              onChange={(e) => setNewName(e.target.value)}
+              onChange={(e) => setNewName(e.target.value)} // Update state on input change
             />
             </div>
           </>

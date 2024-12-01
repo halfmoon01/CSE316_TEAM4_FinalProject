@@ -1,7 +1,7 @@
 import React from 'react';
 import '@/css_files/contact.css';
-import UserIcon from '../../public/user.png';
 const Contact = ({ isOpen, onClose, selectedExecutive }) => {
+  // If the modal is not open or no executive is selected, return null
   if (!isOpen || !selectedExecutive) return null;
 
   return (
@@ -17,11 +17,13 @@ const Contact = ({ isOpen, onClose, selectedExecutive }) => {
 
       {/* Upper Section */}
       <div className="upper-section">
+        {/* Profile Image */}
         <img
-          src={selectedExecutive.profileImageUrl || UserIcon}
+          src={selectedExecutive.profileImageUrl || '/user.png'}
           className="contact-image"
           alt="Profile"
         />
+        {/* Name and Position */}
       <div className="text-section">
         <h2 className="contact-name">{selectedExecutive.name}</h2>
         <h4 className="contact-position">{selectedExecutive.position}</h4>
@@ -33,10 +35,10 @@ const Contact = ({ isOpen, onClose, selectedExecutive }) => {
 
     {/* Lower Section */}
     <p className="contact-info">
-      <strong>Phone Number:</strong> {selectedExecutive.phoneNumber}
+      <strong>Phone Number:</strong> {selectedExecutive.phoneNumber} {/* Executive's phone number */}
     </p>
     <p className="contact-info">
-      <strong>E-Mail Address:</strong> {selectedExecutive.email}
+      <strong>E-Mail Address:</strong> {selectedExecutive.email} {/* Executive's email */}
     </p>
   </div>
 </div>

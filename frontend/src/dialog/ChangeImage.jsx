@@ -4,12 +4,13 @@ import { checkAuth } from "../AuthTracker";
 const ChangeImage = ({ isOpen, onClose }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileName, setFileName] = useState('No file chosen');
-  const [isSaving, setIsSaving] = useState(false); // 저장 중 상태 추가
+  const [isSaving, setIsSaving] = useState(false); // State to track saving status
   const {memberId} = checkAuth();
   
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files[0];  // Get the first selected file
     if (file) {
+      // Validate if the selected file is an image
       if (!file.type.startsWith("image/")) {
         alert("Please select a valid image file (e.g., .jpg, .png).");
         return;
@@ -24,12 +25,12 @@ const ChangeImage = ({ isOpen, onClose }) => {
       alert("Please select an image file.");
       return;
     }
-    if (isSaving) return; 
-    setIsSaving(true); 
+    if (isSaving) return;  // Prevent multiple save actions
+    setIsSaving(true);  // Set saving status to true
   
-    const formData = new FormData();
-    formData.append("image", selectedFile); 
-    formData.append("id", memberId); 
+    const formData = new FormData();  // Create a FormData object for file upload
+    formData.append("image", selectedFile);  // Append the selected file
+    formData.append("id", memberId);  // Append the authenticated user ID
   
     try {
       const response = await fetch("http://localhost:8080/change-image", {
@@ -39,7 +40,7 @@ const ChangeImage = ({ isOpen, onClose }) => {
   
       if (response.ok) {
         alert("Image changed successfully!");
-        window.location.reload();
+        window.location.reload();  // Reload the page to reflect changes
         onClose(); 
       } else {
         const data = await response.json();
@@ -49,12 +50,13 @@ const ChangeImage = ({ isOpen, onClose }) => {
       console.error("Error:", err);
       alert("An error occurred while changing the image.");
     }finally {
-      setIsSaving(false); 
+      setIsSaving(false);  // Reset saving status
     }
   };
   
   return (
     //isOpen -> open dialog
+     // Render the dialog only if `isOpen` is true
     isOpen && (
       <Dialog
         title="Change your image"
@@ -66,14 +68,14 @@ const ChangeImage = ({ isOpen, onClose }) => {
               id="fileInput" 
               className="new-input" 
               onChange={handleFileChange} 
-              accept="image/*"
+              accept="image/*" // Restrict file types to images
               />
             </div>
           </>
         }
         onClose={onClose}
         onSave={handleSave}
-        isSaving = {isSaving}
+        isSaving = {isSaving} // Pass the saving state to the dialog
       />
     )
   );
