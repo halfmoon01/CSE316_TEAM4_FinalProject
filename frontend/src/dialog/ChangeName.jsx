@@ -5,14 +5,21 @@ import { checkAuth } from "../AuthTracker";
 
 const ChangeName = ({ isOpen, onClose }) => {
   const [newName, setNewName] = useState('');
-  const {memberId} = checkAuth();
+  const {memberId, name} = checkAuth();
   
   const handleSave = async () => {
-    if(!newName.trim()){
-      alert('Name cannot be empty');
-      return;
-    }
     try {
+
+      if(newName === name){
+        alert("Please insert a new name!");
+        return; 
+      }
+
+      if(newName === ""){
+        alert("Name cannot be empty!");
+        return;
+      }
+
       const response = await fetch('http://localhost:8080/change-name', {
         method: 'POST',
         headers: {

@@ -5,7 +5,7 @@ import { checkAuth } from "../AuthTracker";
 
 const ChangeEmail = ({ isOpen, onClose }) => {
   const [newEmail, setNewEmail] = useState(''); // State to manage the new email input
-  const {memberId} = checkAuth();
+  const {memberId, email} = checkAuth();
 
   const handleSave = async () => {
     if (!newEmail.trim()) {
@@ -21,6 +21,12 @@ const ChangeEmail = ({ isOpen, onClose }) => {
     }
   
     try {
+
+      if(newEmail === email){
+        alert("Please insert a new email!");
+        return;
+      }
+
       const response = await fetch('http://localhost:8080/change-email', {
         method: 'POST',
         headers: {

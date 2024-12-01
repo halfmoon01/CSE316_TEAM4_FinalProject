@@ -291,15 +291,9 @@ app.post("/signin", (req, res) => {
   );
 });
 
-// Endpoint to update a user's name 
+// Endpoint to update a user's name
 app.post("/change-name", (req, res) => {
   const { newName, memberId } = req.body; // Extract new name and member ID
-
-  if (!newName) {
-    return res
-      .status(400)
-      .json({ message: "Invalid name. Name cannot be empty." });
-  }
 
   const query = "UPDATE members SET name = ? WHERE memberId = ?";
 
@@ -321,6 +315,7 @@ app.post("/change-name", (req, res) => {
 app.post("/change-email", (req, res) => {
   const { newEmail, memberId } = req.body;
 
+  // Validate newEmail and memberId
   if (!newEmail || typeof newEmail !== "string" || !newEmail.trim()) {
     return res
       .status(400)
@@ -331,20 +326,36 @@ app.post("/change-email", (req, res) => {
     return res.status(400).json({ message: "User ID is required." });
   }
 
-  const query = "UPDATE members SET email = ? WHERE memberId = ?";
-
-  db.query(query, [newEmail.trim(), memberId], (err, result) => {
+  // Check if email already exists
+  const checkEmailQuery = "SELECT * FROM members WHERE email = ?";
+  db.query(checkEmailQuery, [newEmail], (err, result) => {
     if (err) {
-      console.error("Error updating email:", err);
+      console.error("Error checking email:", err);
       return res
         .status(500)
-        .json({ message: "An error occurred while updating the email." });
+        .json({ message: "An error occurred while checking the email." });
     }
-    return res
-      .status(200)
-      .json({ message: "Email changed successfully!", updatedEmail: newEmail });
+
+    if (result.length > 0) {
+      return res.status(409).json({ message: "Email already exists." });
+    }
+
+    // Update email if no conflict
+    const updateEmailQuery = "UPDATE members SET email = ? WHERE memberId = ?";
+    db.query(updateEmailQuery, [newEmail.trim(), memberId], (err, result) => {
+      if (err) {
+        console.error("Error updating email:", err);
+        return res
+          .status(500)
+          .json({ message: "An error occurred while updating the email." });
+      }
+      return res
+        .status(200)
+        .json({ message: "Email changed successfully!", updatedEmail: newEmail });
+    });
   });
 });
+
 
 // Endpoint to change password
 app.post("/change-password", (req, res) => {
@@ -402,24 +413,44 @@ app.post("/change-password", (req, res) => {
 app.post("/change-phone", (req, res) => {
   const { newPhone, memberId } = req.body;
 
+  // Validate input
   if (!newPhone) {
     return res
       .status(400)
-      .json({ message: "Invalid password. Password cannot be empty." });
+      .json({ message: "Invalid phone number. Phone number cannot be empty." });
   }
 
-  const query = "UPDATE members SET phoneNumber = ? WHERE memberId = ?";
-
-  db.query(query, [newPhone, memberId], (err, result) => {
+  // Check if the phone number already exists
+  const checkPhoneQuery = "SELECT * FROM members WHERE phoneNumber = ?";
+  db.query(checkPhoneQuery, [newPhone], (err, result) => {
     if (err) {
-      console.error("Error updating password:", err);
+      console.error("Error checking phone number:", err);
       return res
         .status(500)
-        .json({ message: "An error occurred while updating the password." });
+        .json({ message: "An error occurred while checking the phone number." });
     }
-    return res.status(200).json({ message: "Password changed successfully!" });
+
+    if (result.length > 0) {
+      return res.status(409).json({ message: "Phone Number already exists." });
+    }
+
+    // Update phone number if it does not already exist
+    const updatePhoneQuery = "UPDATE members SET phoneNumber = ? WHERE memberId = ?";
+    db.query(updatePhoneQuery, [newPhone, memberId], (err, result) => {
+      if (err) {
+        console.error("Error updating phone number:", err);
+        return res
+          .status(500)
+          .json({ message: "An error occurred while updating the phone number." });
+      }
+
+      return res
+        .status(200)
+        .json({ message: "Phone number changed successfully!" });
+    });
   });
 });
+
 
 app.post("/change-image", upload.single("image"), async (req, res) => {
   const { id } = req.body;
@@ -626,10 +657,9 @@ app.delete("/api/gallery-delete/:imageId", (req, res) => {
   });
 });
 
-
 app.get("/members/:id", (req, res) => {
   const userId = parseInt(req.params.id);
-  // get member list without logined person 
+  // get member list without logined person
   const query = "SELECT * FROM members WHERE not id = ?";
 
   db.query(query, [userId], (err, results) => {
@@ -815,7 +845,7 @@ app.put("/manage-account/members/:memberId/position", (req, res) => {
 
 app.get("/executives", (req, res) => {
   const query =
-  // only get executives (where level is 1 or 2)
+    // only get executives (where level is 1 or 2)
     "SELECT * FROM members WHERE isExecutives = 1 or isExecutives = 2 ORDER BY isExecutives DESC";
   db.query(query, (err, results) => {
     if (err) {
