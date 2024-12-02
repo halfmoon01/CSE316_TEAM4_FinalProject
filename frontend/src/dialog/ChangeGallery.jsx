@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import GalleryDialog from './GalleryDialog';
-import { checkAuth } from "../AuthTracker";
 
 const ChangeGallery = ({ isOpen, onClose }) => {
   const [selectedFile, setSelectedFile] = useState(null); 
   const [fileName, setFileName] = useState('');
   const [isSaving, setIsSaving] = useState(false);  // State to track saving status
-  const {memberId} = checkAuth();
   
   const handleFileChange = (e) => {
     const file = e.target.files[0]; // Get the first selected file
@@ -36,7 +34,6 @@ const ChangeGallery = ({ isOpen, onClose }) => {
       if (response.ok) {
         const data = await response.json();
         alert("Image added successfully!");
-        window.location.reload(); // Reload the page to reflect the change
         onClose(); 
       } else {
         const data = await response.json();

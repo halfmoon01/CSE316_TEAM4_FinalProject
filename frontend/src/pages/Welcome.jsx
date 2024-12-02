@@ -19,7 +19,7 @@ const Welcome = () => {
     // Navigates unauthenticated users to the login page
     if (!isLoggedIn) {
       alert(
-        "You have to sign in first in order to access the page!\nNavigating to the Login Page..."
+        "You have to sign in first in order to access the page!\nNavigating..."
       );
       navigate("/LogIn");
     }

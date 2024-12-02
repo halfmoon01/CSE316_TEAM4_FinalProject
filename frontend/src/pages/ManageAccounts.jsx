@@ -15,7 +15,13 @@ const Members = () => {
 
   const { id, isExecutives, isLoading, isLoggedIn } = checkAuth();
   const navigate = useNavigate();
-  const alerted = useRef(false); // Ref to prevent multiple alerts
+
+  // Ref to prevent multiple alerts
+  const alerted = useRef(false);
+
+  // State to track if the alert has been shown
+  const [showAlert, setShowAlert] = useState(false); 
+
 
   // Set the page title
   useEffect(() => {
@@ -40,12 +46,12 @@ const Members = () => {
     fetchMembers();
   }, [id]);
 
-  // Navigates unauthenticated users to the login page
+  // Navigates unauthenticated users
   useEffect(() => {
     if (!isLoading && !isLoggedIn && !alerted.current) {
       alerted.current = true;
       alert(
-        "You have to sign in first in order to access the page!\nNavigating to the Login Page..."
+        "You have to sign in first in order to access the page!\nNavigating..."
       );
       navigate("/LogIn");
     }
@@ -61,6 +67,22 @@ const Members = () => {
       navigate("/HomeScreen");
     }
   }, [isLoading, isLoggedIn, isExecutives, navigate]);
+
+  // Show the alert after the page has loaded
+  useEffect(() => {
+    if (!isLoading && isLoggedIn && isExecutives > 0) {
+      setShowAlert(true); // Trigger the alert once after the page loads
+    }
+  }, [isLoading, isLoggedIn, isExecutives]);
+
+  // Display alert after rendering if `showAlert` is true
+  useEffect(() => {
+    if (showAlert) {
+      alert(
+        "Pressing the 'Remove' button or altering a member's role will immediately be updated to the database without additional confirmation."
+      );
+    }
+  }, [showAlert]);
 
   // Show loading screen or deny access if conditions are not met
   if (isLoading) {

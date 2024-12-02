@@ -20,6 +20,9 @@ const EditGallery = () => {
   // To prevent duplicate alerts
   const alerted = useRef(false);
 
+  // State to track if the alert has been shown
+  const [showAlert, setShowAlert] = useState(false); 
+
   // Set the page title
   useEffect(() => {
     document.title = "Edit Gallery Page";
@@ -41,14 +44,14 @@ const EditGallery = () => {
     };
 
     fetchGallery();
-  }, []);
+  }, [isDialogOpen]);
 
-  // Navigates unauthenticated users to the login page
+  // Navigates unauthenticated users
   useEffect(() => {
     if (!isLoading && !isLoggedIn && !alerted.current) {
       alerted.current = true;
       alert(
-        "You have to sign in first in order to access the page!\nNavigating to the Login Page..."
+        "You have to sign in first in order to access the page!\nNavigating..."
       );
       navigate("/LogIn");
     }
@@ -64,6 +67,20 @@ const EditGallery = () => {
       navigate("/HomeScreen");
     }
   }, [isLoading, isLoggedIn, isExecutives, navigate]);
+
+  useEffect(() => {
+    if (!isLoading && isLoggedIn && isExecutives > 0) {
+      setShowAlert(true); // Trigger the alert once after the page loads
+    }
+  }, [isLoading, isLoggedIn, isExecutives]);
+
+  useEffect(() => {
+    if (showAlert) {
+      alert(
+        "Clicking the Remove button will delete images without additional confirmation."
+      );
+    }
+  }, [showAlert]);
 
   // Show loading screen or deny access if conditions are not met
   if (isLoading) {

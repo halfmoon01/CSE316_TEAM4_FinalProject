@@ -45,12 +45,12 @@ const EditAnnouncement = () => {
     loadAnnouncement();
   }, []);
 
-  // Navigates unauthenticated users to the login page
+  // Navigates unauthenticated users
   useEffect(() => {
     if (!isLoading && !isLoggedIn && !alerted.current) {
       alerted.current = true;
       alert(
-        "You have to sign in first in order to access the page!\nNavigating to the Login Page..."
+        "You have to sign in first in order to access the page!\nNavigating..."
       );
       navigate("/LogIn");
     }

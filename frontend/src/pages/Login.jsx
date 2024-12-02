@@ -24,7 +24,7 @@ const Login = () => {
   useEffect(() => {
     if (!isLoading && isLoggedIn && !alerted.current) {
       alerted.current = true;
-      alert("Already logged in!\nRedirecting to Home Screen.");
+      alert("Already logged in!\nNavigating...");
 
       navigate("/HomeScreen");
     }
