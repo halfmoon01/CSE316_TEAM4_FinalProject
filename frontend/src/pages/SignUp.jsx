@@ -18,7 +18,7 @@ const SignUp = () => {
 
   // Default values for optional fields
   const profileImageUrl = null;
-  const position = "member";
+  const position = "Member";
 
   // Set the page title
   useEffect(() => {

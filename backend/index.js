@@ -208,7 +208,7 @@ app.post("/signup", (req, res) => {
     name,
     phoneNumber,
     profileImageUrl || null, // Default to `null` if no profile image is provided
-    position || "member", // Default to "member" if no position is specified
+    position || "Member", // Default to "member" if no position is specified
   ];
 
   // Execute the query

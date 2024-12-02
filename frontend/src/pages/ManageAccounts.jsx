@@ -126,7 +126,7 @@ const Members = () => {
       // 3. Member(0) → Chief Executive(2) reject 
       // member cannot be Cheif Executive right away 
       if (currentMember.isExecutives === 0 && newIsExecutive === 2) {
-        alert("Cannot change directly from Member to Chief Executive.");
+        alert("Cannot change directly from Non-Executive to Chief Executive Manager.");
         return;
       }
       // 4. send to server
