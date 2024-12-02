@@ -20,7 +20,8 @@ const Members = () => {
   const alerted = useRef(false);
 
   // State to track if the alert has been shown
-  const [showAlert, setShowAlert] = useState(false); 
+  const [showAlert, setShowAlert] = useState(false);
+  const [isAltered, setIsAltered] = useState(false);
 
 
   // Set the page title
@@ -44,7 +45,7 @@ const Members = () => {
     };
 
     fetchMembers();
-  }, [id]);
+  }, [id, isAltered]);
 
   // Navigates unauthenticated users
   useEffect(() => {
@@ -147,7 +148,7 @@ const Members = () => {
         alert("You have been demoted to Executive Manager.");
       }
       alert(`Position updated to "${newPosition}"`);
-      window.location.reload();
+      setIsAltered(!isAltered);
     } catch (error) {
       console.error("Error updating position:", error);
       alert("An error occurred while updating the position.");
@@ -165,6 +166,7 @@ const Members = () => {
           prevMembers.filter((member) => member.id !== memberId)
         );
         alert('This member has been removed.');
+        setIsAltered(!isAltered);
       } else {
         const errorData = await response.json();
         console.error('Failed to remove member:', errorData.message);
