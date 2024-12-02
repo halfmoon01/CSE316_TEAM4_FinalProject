@@ -360,9 +360,6 @@ app.post("/change-email", (req, res) => {
 // Endpoint to change password
 app.post("/change-password", (req, res) => {
   const { oldHashedPassword, newHashedPassword, memberId } = req.body;
-
-  console.log("Received Request Body:", req.body); // Debugging
-
   if (!oldHashedPassword || !newHashedPassword) {
     return res.status(400).json({ message: "Passwords cannot be empty." });
   }
@@ -493,9 +490,7 @@ app.post("/change-image", upload.single("image"), async (req, res) => {
       }
 
       res.status(200).json({
-        message: file
-          ? "Image uploaded and saved successfully!"
-          : "Default image set successfully!",
+        message: "Image uploaded and saved successfully!",
         imageUrl,
       });
     });

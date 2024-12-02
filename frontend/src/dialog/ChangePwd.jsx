@@ -10,11 +10,15 @@ const ChangePwd = ({ isOpen, onClose }) => {
 
   const handleSave = async () => {
     if (!oldPassword.trim() || !newPassword.trim()) {
-      alert('Both old and new passwords are required.');
+      alert("Please insert a new value.");
       return;
     }
 
     try {
+      if(oldPassword === newPassword){
+        alert("Please insert a new value.");
+        return;
+      }
       // Hash both old and new passwords
       const oldHashedPassword = hashutil(memberId, oldPassword.trim());
       const newHashedPassword = hashutil(memberId, newPassword.trim());
@@ -35,7 +39,7 @@ const ChangePwd = ({ isOpen, onClose }) => {
       });
 
       if (response.ok) {
-        alert('Password changed successfully!');
+        alert('Changed successfully!');
         window.location.reload();  // Reload the page to reflect changes
         onClose(); // Close dialog
       } else { 

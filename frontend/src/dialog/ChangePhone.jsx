@@ -5,21 +5,25 @@ import { checkAuth } from "../AuthTracker";
 
 const ChangePhone = ({ isOpen, onClose }) => {
   const [newPhone, setNewPhone] = useState('');
-  const { memberId } = checkAuth(); 
+  const { memberId, phoneNumber} = checkAuth(); 
 
   const handleSave = async () => {
     // Regular expression to validate Korean phone number format
+    if (!newPhone.trim()) {
+      alert('Please fill out every input.'); // Alert if the phone number is empty
+      return;
+    }
     const phoneRegex = /^[0-9]{3}-[0-9]{4}-[0-9]{4}$/;
     if (!phoneRegex.test(newPhone)) {
       alert("Please enter a valid phone number (e.g., 010-1234-5678)."); // Alert for invalid phone number
     return; 
   }
 
-    if (!newPhone.trim()) {
-      alert('Phone number cannot be empty'); // Alert if the phone number is empty
-      return;
-    }
     try {
+      if(newPhone === phoneNumber){
+        alert("Please insert a new value!");
+        return; 
+      }
       const response = await fetch('http://localhost:8080/change-phone', {
         method: 'POST',
         headers: {
@@ -29,7 +33,7 @@ const ChangePhone = ({ isOpen, onClose }) => {
       });
 
       if (response.ok) {
-        alert('Phone number changed successfully!'); // Notify the user of success
+        alert('Changed successfully!'); // Notify the user of success
         window.location.reload(); // Reload the page to reflect changes
         onClose(); 
       } else {

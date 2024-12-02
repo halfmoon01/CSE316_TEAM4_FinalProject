@@ -11,12 +11,12 @@ const ChangeName = ({ isOpen, onClose }) => {
     try {
 
       if(newName === name){
-        alert("Please insert a new name!");
+        alert("Please insert a new value!");
         return; 
       }
 
       if(newName === ""){
-        alert("Name cannot be empty!");
+        alert("Please fill out every input.");
         return;
       }
 
@@ -29,7 +29,7 @@ const ChangeName = ({ isOpen, onClose }) => {
       });
   
       if (response.ok) {
-        alert('Name changed successfully!');
+        alert('Changed successfully!');
         window.location.reload(); // Reload the page to reflect changes
         onClose(); // Close the dialog
       } else {

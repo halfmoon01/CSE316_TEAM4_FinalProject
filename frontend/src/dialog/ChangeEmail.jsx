@@ -9,7 +9,7 @@ const ChangeEmail = ({ isOpen, onClose }) => {
 
   const handleSave = async () => {
     if (!newEmail.trim()) {
-      alert('Email cannot be empty');  // Alert if the email is not provided
+      alert('Please fill out every input.');  // Alert if the email is not provided
       return;
     }
  // Regular expression to validate email format
@@ -23,7 +23,7 @@ const ChangeEmail = ({ isOpen, onClose }) => {
     try {
 
       if(newEmail === email){
-        alert("Please insert a new email!");
+        alert("Please insert a new value.");
         return;
       }
 
@@ -36,7 +36,7 @@ const ChangeEmail = ({ isOpen, onClose }) => {
       });
   
       if (response.ok) {
-        alert('Email changed successfully!');
+        alert('Changed successfully!');
         window.location.reload();
         onClose();
       } else {
