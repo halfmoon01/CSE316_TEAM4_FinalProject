@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import "@/css_files/home_screen.css";
+import "@/css_files/homeScreen.css";
 
 const HomeScreen = () => {
   // Set the page title

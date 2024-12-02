@@ -65,13 +65,13 @@
     width: 90vw;
   }
   
-  .image-placeholder {
+  .image-sizer {
     width: 90vw;
     height: 300px;
     background-color: #ccc;
   }
 
-  .grid-container .image-placeholder{
+  .grid-container .image-sizer{
     width: 90vw;
     height: 300px;
   }
