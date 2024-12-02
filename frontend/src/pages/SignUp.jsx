@@ -88,6 +88,12 @@ const SignUp = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Inline validation checks
+    if (!/^[0-9]{3}-[0-9]{4}-[0-9]{4}$/.test(phoneNumber) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert("Please follow the format.");
+    return;
+    }
+
     // Run validation checks
     const isValid = await ValidateSignUp();
     if (!isValid) return;
@@ -146,6 +152,12 @@ const SignUp = () => {
             placeholder="Enter your password again..."
             required
           />
+          {/* Inline validation message for password confirmation */}
+          {passwordCheck.length > 0 && password !== passwordCheck && (
+          <p style={{ color: "red", fontSize: "11px" }}>
+            Passwords do not match.
+          </p>
+          )}
           <input
             type="text"
             id="name"
@@ -162,6 +174,13 @@ const SignUp = () => {
             placeholder="Enter your phone number"
             required
           />
+          {/* Inline validation message for invalid phone number format */}
+          {!/^[0-9]{3}-[0-9]{4}-[0-9]{4}$/.test(phoneNumber) &&
+            phoneNumber.length > 0 && (
+              <p style={{ color: "red" ,fontSize: "11px"}}>
+                Invalid phone number format. Use 010-1234-5678.
+              </p>
+            )}
           <input
             type="email"
             id="email"
@@ -170,6 +189,10 @@ const SignUp = () => {
             placeholder="Enter your e-mail address"
             required
           />
+          {/* Inline validation message for invalid email format */}
+          {!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length > 0 && (
+            <p style={{ color: "red"  ,fontSize: "11px"}}>Invalid email format. Use example@domain.com.</p>
+          )}
           <button type="submit" id="sign-up-button">
             Sign up
           </button>
