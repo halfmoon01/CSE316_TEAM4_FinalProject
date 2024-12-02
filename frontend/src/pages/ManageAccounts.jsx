@@ -186,8 +186,9 @@ const Members = () => {
           <h1 className="myInfo-title">Manage Accounts</h1>
           <hr />
       </div>
-      <div className="members-container">
-        {members.map((member) => (
+        {members.length > 0 ? (
+          <div className="members-container">
+          {members.map((member) => (
           <div className="member-card" key={member.id}>
             <div className="member-image">
               <img src={member.profileImageUrl || "/user.png"} alt="Member" />
@@ -225,7 +226,12 @@ const Members = () => {
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      ) : (
+        <div className="no-members-container">
+         <p className="no-members-message">No Members Registered Yet.</p>
+        </div>
+      )}
     </>
   );
 };

@@ -95,3 +95,14 @@
     cursor: pointer; 
     transition: border-color 0.3s ease; 
   }
+
+  .no-members-container {
+    text-align: center; /* Center the text horizontally */
+    margin-top: 20px; /* Add some spacing */
+  }
+  
+  .no-members-message {
+    font-size: 30px;
+    color: black
+  }
+  
