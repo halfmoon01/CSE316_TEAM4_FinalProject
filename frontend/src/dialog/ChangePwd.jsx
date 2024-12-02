@@ -84,6 +84,12 @@ const ChangePwd = ({ isOpen, onClose }) => {
                 setNewPassword(e.target.value) // Update state on input change
               }
             />
+             {/* Inline validation message for new password */}
+             {oldPassword && newPassword === oldPassword && (
+                <p style={{ color: "red", fontSize: "13px" }}>
+                  The new password cannot be the same as the old password.
+                </p>
+            )}
             </div>
           </>
         }

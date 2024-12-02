@@ -63,9 +63,7 @@ const ChangePhone = ({ isOpen, onClose }) => {
                 value={newPhone}
                 onChange={(e) => {
                   const input = e.target.value;
-                  if (/^[0-9-]*$/.test(input)) {
-                    setNewPhone(input); // Allow only numbers and hyphens
-                  }
+                    setNewPhone(input); 
                 }}
                 pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" // Pattern to validate Korean phone number format
                 required
