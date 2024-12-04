@@ -23,7 +23,7 @@ const ChangeEmail = ({ isOpen, onClose }) => {
     try {
 
       if(newEmail === email){
-        alert("Please insert a new value.");
+        alert("Please insert a new email.");
         return;
       }
 

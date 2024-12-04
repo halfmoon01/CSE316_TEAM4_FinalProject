@@ -21,7 +21,7 @@ const ChangePhone = ({ isOpen, onClose }) => {
 
     try {
       if(newPhone === phoneNumber){
-        alert("Please insert a new value!");
+        alert("Please insert a new phone number.");
         return; 
       }
       const response = await fetch('http://localhost:8080/change-phone', {

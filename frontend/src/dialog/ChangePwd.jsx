@@ -16,7 +16,7 @@ const ChangePwd = ({ isOpen, onClose }) => {
 
     try {
       if(oldPassword === newPassword){
-        alert("Please insert a new value.");
+        alert("Please insert a new password.");
         return;
       }
       // Hash both old and new passwords

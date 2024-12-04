@@ -11,7 +11,7 @@ const ChangeName = ({ isOpen, onClose }) => {
     try {
 
       if(newName === name){
-        alert("Please insert a new value!");
+        alert("Please insert a new name.");
         return; 
       }
 
