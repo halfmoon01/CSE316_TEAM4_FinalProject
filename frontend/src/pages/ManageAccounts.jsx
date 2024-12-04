@@ -229,7 +229,7 @@ const Members = () => {
         </div>
       ) : (
         <div className="no-members-container">
-         <p className="no-members-message">No Members Registered Yet.</p>
+          <h2 className="no-members-message">No Members Registered Yet.</h2>
         </div>
       )}
     </>

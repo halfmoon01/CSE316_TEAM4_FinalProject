@@ -42,7 +42,7 @@ const EditGallery = () => {
         console.error("Error fetching gallery:", error);
       }
     };
-
+    
     fetchGallery();
   }, [isDialogOpen]);
 

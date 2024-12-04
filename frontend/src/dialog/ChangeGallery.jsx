@@ -32,9 +32,8 @@ const ChangeGallery = ({ isOpen, onClose }) => {
       });
   
       if (response.ok) {
-        const data = await response.json();
         alert("Image added successfully!");
-        onClose(); 
+        onClose();
       } else {
         const data = await response.json();
         alert(data.message || "Failed to add image.");
@@ -44,6 +43,7 @@ const ChangeGallery = ({ isOpen, onClose }) => {
       alert("An error occurred while adding the image.");
     }finally{
       setIsSaving(false);
+      setSelectedFile(null);
     }
   };
   
