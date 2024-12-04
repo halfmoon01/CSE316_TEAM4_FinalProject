@@ -23,6 +23,8 @@ const Members = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [isAltered, setIsAltered] = useState(false);
 
+  const [membersFetched, setMembersFetched] = useState(false);
+
 
   // Set the page title
   useEffect(() => {
@@ -34,7 +36,8 @@ const Members = () => {
           const response = await fetch(`http://localhost:8080/members/${id}`);
           if (response.ok) {
             const data = await response.json();
-            setMembers(data.memberList); 
+            setMembers(data.memberList);
+            setMembersFetched(true);
           } else {
             console.error("Failed to fetch members.");
           }
@@ -181,56 +184,56 @@ const Members = () => {
   
   return (
     <>
-    {/* Page Heading */}
-    <div className="myinfo-heading">
-          <h1 className="myInfo-title">Manage Accounts</h1>
-          <hr />
+      <div className="myinfo-heading">
+        <h1 className="myInfo-title">Manage Accounts</h1>
+        <hr />
       </div>
-        {members.length > 0 ? (
+      {membersFetched ? (
+        members.length > 0 ? (
           <div className="members-container">
-          {members.map((member) => (
-          <div className="member-card" key={member.id}>
-            <div className="member-image">
-              <img src={member.profileImageUrl || "/user.png"} alt="Member" />
-            </div>
-            {/* Member Details */}
-            <div className="member-content">
-              <p>Name: {member.name}</p>
-              <p>ID: {member.memberId}</p>
-              <p>Email: {member.email}</p>
-              <p>Phone-number: {member.phoneNumber}</p>
-              {/* Position Selector */}
-              <div className="position-selector">
-                <p>Position:</p>
-                <select
-                  className="select"
-                  value={member.position || "No position assigned"}
-                  onChange={(e) =>
-                    handlePositionChange(member.id, e.target.value)
-                  }
-                >
-                  {positions.map((position) => (
-                    <option key={position} value={position}>
-                      {position}
-                    </option>
-                  ))}
-                </select>
+            {members.map((member) => (
+              <div className="member-card" key={member.id}>
+                <div className="member-image">
+                  <img src={member.profileImageUrl || "/user.png"} alt="Member" />
+                </div>
+                <div className="member-content">
+                  <p>Name: {member.name}</p>
+                  <p>ID: {member.memberId}</p>
+                  <p>Email: {member.email}</p>
+                  <p>Phone-number: {member.phoneNumber}</p>
+                  <div className="position-selector">
+                    <p>Position:</p>
+                    <select
+                      className="select"
+                      value={member.position || "No position assigned"}
+                      onChange={(e) =>
+                        handlePositionChange(member.id, e.target.value)
+                      }
+                    >
+                      {positions.map((position) => (
+                        <option key={position} value={position}>
+                          {position}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <button
+                    className="remove-account-button"
+                    onClick={() => handleRemove(member.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
-
-              <button
-                className="remove-account-button"
-                onClick={() => handleRemove(member.id)}
-              >
-                Remove
-              </button>
-            </div>
+            ))}
           </div>
-        ))}
-        </div>
+        ) : (
+          <div className="no-members-container">
+            <h2 className="no-members-message">No Members Registered Yet</h2>
+          </div>
+        )
       ) : (
-        <div className="no-members-container">
-          <h2 className="no-members-message">No Members Registered Yet.</h2>
-        </div>
+        <h2 className="loading-message">Fetching members...</h2>
       )}
     </>
   );
