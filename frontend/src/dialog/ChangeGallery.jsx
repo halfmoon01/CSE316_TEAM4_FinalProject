@@ -47,6 +47,11 @@ const ChangeGallery = ({ isOpen, onClose }) => {
     }
   };
   
+  const handleClose = () => {
+    setSelectedFile(null); // Reset selected file
+    setFileName(''); // Reset file name
+    onClose(); // Call the parent close handler
+  };
   
   return (
     //isOpen -> open dialog
@@ -67,7 +72,7 @@ const ChangeGallery = ({ isOpen, onClose }) => {
             </div>
           </>
         }
-        onClose={onClose}
+        onClose={handleClose}
         onSave={handleSave}
         isSaving = {isSaving} // Pass the saving state to the dialog
       />
