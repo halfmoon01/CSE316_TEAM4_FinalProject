@@ -1,7 +1,7 @@
-# CSE316_TEAM4_FinalProject
+# CSE316_TEAM4_FinalProject:
 This is for CSE 316 Final Project. Our team number is 4, and we are Hyeseong Bak and Sanghyun Jun
 
-# Project Structure Description
+## Project Structure Description:
 
 This project consists of **backend** and **frontend** components, which need to be set up separately. Below is a guide for configuring and running the project.
 
@@ -41,7 +41,32 @@ To start the **backend server**, run the following command inside the `backend` 
 To start the **fronted development server**, run the following command inside the `frontend` folder:
 `npm run dev`
 
-## Additional Notes
+## Test Accounts:
+
+To simplify testing and ensure consistent behavior across different user positions, the following test accounts have been pre-configured in the database:
+
+**Position: Chief Executive Manager**  
+- Username: `chief_test`  
+- Password: `1111`  
+
+**Position: Executive Manager**  
+- Username: `exec_test`  
+- Password: `1111`  
+
+**Position: Member**  
+- Username: `mem_test`  
+- Password: `1111`  
+
+**Purpose**  
+These accounts are set up to allow testing of position-based permissions and functionality. Each positions has different levels of access and responses on the website:
+
+1. **Chief Executive Manager:** Full administrative privileges, including managing executives and high-level configurations.  
+2. **Executive Manager:** Moderate permissions, such as managing members and accessing executive-level features.  
+3. **Member:** Basic permissions, mostly limited to viewing content without administrative controls.  
+
+By using these accounts, you can test various scenarios and features without needing to manually create user accounts.
+
+# Additional Notes
 Ensure you have Node.js and npm installed on your system.
 The backend server runs on http://localhost:8080 by default.
 The frontend development server runs on http://localhost:5173.
