@@ -22,6 +22,9 @@ const EditAnnouncement = () => {
   // To avoid duplicate alerts
   const alerted = useRef(false);
 
+  // State to track if the alert has been shown
+  const [showAlert, setShowAlert] = useState(false); 
+
   // Fetch the current announcement data when the component mounts
   useEffect(() => {
     const loadAnnouncement = async () => {
@@ -66,6 +69,20 @@ const EditAnnouncement = () => {
       navigate("/HomeScreen");
     }
   }, [isLoading, isLoggedIn, isExecutives, navigate]);
+
+  useEffect(() => {
+    if (!isLoading && isLoggedIn && isExecutives > 0) {
+      setShowAlert(true); // Trigger the alert once after the page loads
+    }
+  }, [isLoading, isLoggedIn, isExecutives]);
+
+  useEffect(() => {
+    if (showAlert) {
+      alert(
+        "Clicking REFRESH button or navigation to another page will delete unsaved changes without further notice."
+      );
+    }
+  }, [showAlert]);
 
   // Show loading screen or deny access if conditions are not met
   if (isLoading) {
