@@ -16,6 +16,8 @@
   background-color: #d8d2c2;
   width: 500px;
   padding: 30px;
+  margin-left: 20px;
+  margin-right: 20px;
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
