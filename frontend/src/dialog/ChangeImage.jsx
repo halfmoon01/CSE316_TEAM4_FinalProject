@@ -5,7 +5,7 @@ const ChangeImage = ({ isOpen, onClose }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileName, setFileName] = useState('No file chosen');
   const [isSaving, setIsSaving] = useState(false); // State to track saving status
-  const {memberId} = checkAuth();
+  const {memberId, profileImageUrl} = checkAuth();
   
   const handleFileChange = (e) => {
     const file = e.target.files[0];  // Get the first selected file
@@ -20,7 +20,12 @@ const ChangeImage = ({ isOpen, onClose }) => {
     }
   };
 
+
   const handleSave = async () => {
+    if (!selectedFile && profileImageUrl === "/user.png"){
+      alert("No image to remove!");
+      return;
+    }
     if (!selectedFile) {
       const formData = new FormData();
       formData.append("defaultImage", "/user.png");  // Append the selected default file
@@ -32,7 +37,11 @@ const ChangeImage = ({ isOpen, onClose }) => {
           body: formData, 
         });
         if (response.ok) {
-          alert("Image changed successfully!");
+          if (!selectedFile){
+            alert("Image removed successfully!")
+          }else{
+            alert("Image changed successfully!");
+          }
           window.location.reload();  // Reload the page to reflect changes
           onClose(); 
         } else {
@@ -76,6 +85,12 @@ const ChangeImage = ({ isOpen, onClose }) => {
       setIsSaving(false); // Reset saving status
     }
   };
+
+  const handleClose = () => {
+    setSelectedFile(null); // Reset selected file
+    setFileName(''); // Reset file name
+    onClose(); // Call the parent close handler
+  };
   
   return (
     //isOpen -> open dialog
@@ -96,7 +111,7 @@ const ChangeImage = ({ isOpen, onClose }) => {
             </div>
           </>
         }
-        onClose={onClose}
+        onClose={handleClose}
         onSave={handleSave}
         isSaving = {isSaving} // Pass the saving state to the dialog
       />
