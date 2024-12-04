@@ -14,6 +14,12 @@ This project consists of **backend** and **frontend** components, which need to 
 - **`frontend/`**  
   Contains frontend-related files for the user interface.
 
+- **`database/`**  
+  Contains .sql file used for the application's database. This includes test data and configuration files for setting up the database environment.
+
+- **`document/`**  
+  Contains project documentation such as requirements and test cases to assist with development and ensure project consistency.
+
 ## Initial Setup
 
 ### 1. Download the submitted .zip file
