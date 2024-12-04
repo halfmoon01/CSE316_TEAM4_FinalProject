@@ -27,11 +27,9 @@ Unzip the file
 
 ### 2. Install Dependencies
 Navigate to the `backend` folder and run:
-`cd backend`
 `npm install`
 
 Navigate to the `frontend` folder and run:
-`cd ../frontend`
 `npm install`
 
 ### 3. Setup Database
