@@ -19,6 +19,8 @@
 -- Current Database: `CSE316_TEAM4_DB`
 --
 
+DROP DATABASE IF EXISTS `CSE316_TEAM4_DB`;
+
 CREATE DATABASE /*!32312 IF NOT EXISTS*/ `CSE316_TEAM4_DB` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE `CSE316_TEAM4_DB`;
@@ -92,7 +94,7 @@ CREATE TABLE `members` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`memberId`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -101,7 +103,7 @@ CREATE TABLE `members` (
 
 LOCK TABLES `members` WRITE;
 /*!40000 ALTER TABLE `members` DISABLE KEYS */;
-INSERT INTO `members` VALUES (1,'user10006','password789','John','Treasurer','010-1234-5678','john@example.com','https://i.pinimg.com/474x/ec/26/63/ec26633253128511e08d5b42e3f92b67.jpg',0),(3,'user10008','password102','Alice','Executive Manager','010-3234-5678','alice@example.com','https://i.pinimg.com/474x/be/c6/cb/bec6cb250a7a383f698c9adc75e62f23.jpg',1),(6,'user10011','password105','Jenny','Treasurer','010-6234-5678','jenny@example.com','https://i.pinimg.com/236x/0a/63/e3/0a63e34cf5ed7ca3877f0503fbf3e99f.jpg',0),(8,'user10013','password107','Chris','Executive Manager','010-8234-5678','chris@example.com','https://i.pinimg.com/474x/af/e1/88/afe1885485a9dfb6a8407169b6ed7217.jpg',1),(10,'user10015','password109','Grace','Executive Manager','010-1234-9876','grace@example.com','https://rgo4.com/files/attach/images/2676751/267/892/004/a7ae55188149cc1eaae4489a2ea36033.jpg',1),(11,'onurivit01','fd66793fa10b582c181af08d152924de4ab2eba24d26c8142a222153154d7014','전상현','Chief Executive Manager','010-9519-1520','onurivit01@gmail.com','https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiJRzFaH9bZvfYhEfTK0pUu6TdsngcERstqA&s',2),(23,'user20007','password002','Bob','Executive Manager','010-2234-2234','bob20007@example.com','https://i.pinimg.com/474x/40/6c/71/406c71dddbe19631f597b08563360fc9.jpg',1),(24,'user20008','password003','Charlie','Executive Manager','010-3234-3234','charlie20008@example.com','https://i.pinimg.com/474x/db/ef/ac/dbefacf5ddd80ba757acce099f692ce2.jpg',1);
+INSERT INTO `members` VALUES (27,'chief_test','4fcc78a61e5b6ab5588d7a8c9db536bedcce866ae65b78cundefined78996d5e1bf54a','CHIEF_TEST','Chief Executive Manager','010-4351-3516','chief_test@gmail.com','https://res.cloudinary.com/dncizjyjo/image/upload/v1733324092/user_images/user_chief_test.jpg',2),(28,'exec_test','9a9b11ea36d0fe1ec2b81d57f31dd68a68690ac6af7765451180fc1ffc2054','EXEC_TEST','Executive Manager','010-5125-2315','exec_test@gmail.com','https://res.cloudinary.com/dncizjyjo/image/upload/v1733324198/user_images/user_exec_test.jpg',1),(29,'mem_test','19ab02fd4a1163824cca5f9213c7962dbe385891da3d4b3319ded84b75c964b0','MEM_TEST','Member','010-8536-4673','mem_test@gmail.com','https://res.cloudinary.com/dncizjyjo/image/upload/v1733324305/user_images/user_mem_test.jpg',0),(30,'Hyeseong','a14573433454789cffdc2884b9a55c3bb123aebdd792c7undefined57cff8b67109ac','Hyeseong Bak','Executive Manager','010-3322-5413','hyeseong.bak@stonybrook.edu','https://res.cloudinary.com/dncizjyjo/image/upload/v1733324682/user_images/user_Hyeseong.jpg',1),(32,'sooah','a16a7b84c8f24cb8990e1d27a18fd37d6a51e521042c24db6120bac1f8fa9','Sooah Kim','Executive Manager','012-1231-4123','sooah.kim@gmail.com','https://res.cloudinary.com/dncizjyjo/image/upload/v1733324826/user_images/user_sooah.jpg',1),(33,'sanghyun','bf8b3768ab86cf84017e69dba2054fa1c488d8ffa5dc16200f373bb1cd0910','Sanghyun Jun','Executive Manager','010-5123-5123','sanghyun.jun@stonybrook.edu','https://res.cloudinary.com/dncizjyjo/image/upload/v1733324936/user_images/user_sanghyun.jpg',1),(34,'john','undefined967697f8e6a39c9713f0beaf26935cf1ad825b123705442ddf5adb6bce6fa','John Min','Treasurer','010-5162-3612','john.min@gmail.com','https://res.cloudinary.com/dncizjyjo/image/upload/v1733325076/user_images/user_john.jpg',0),(35,'min','c4fc0bc212024c62b759d90ef87af450e05e97832359b9927347486261090b82','Min Jo','Advisor','010-5123-6267','min.jo@gmail.com','https://res.cloudinary.com/dncizjyjo/image/upload/v1733325134/user_images/user_min.jpg',0),(36,'taeyoung','d02598a9f6ec10696d0d74628690e2d44aade958e6674d5ba16fea3999ae5f','Taeyoung Kang','Member','010-5167-4467','taeyoung.kang@gmail.com','https://res.cloudinary.com/dncizjyjo/image/upload/v1733325244/user_images/user_taeyoung.jpg',0);
 /*!40000 ALTER TABLE `members` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -114,4 +116,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-30  3:42:45
+-- Dump completed on 2024-12-05  0:16:30
